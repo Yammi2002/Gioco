@@ -15,14 +15,18 @@ function tick() {
         const inputs = inputMap[player.id]; //checks players input
         if(inputs.up){
             player.y -= SPEED;
+            player.orientation = "up";
         } else if(inputs.down){
             player.y += SPEED;
+            player.orientation = "down";
         }
 
         if(inputs.right){
             player.x += SPEED;
+            player.orientation = "right";
         } else if(inputs.left){
             player.x -= SPEED;
+            player.orientation = "left";
         }
     }
 
@@ -48,7 +52,8 @@ async function main(){
         players.push({
             id: socket.id,
             x: 0,
-            y: 0
+            y: 0,
+            orientation: "right"
         }); // store players
 
         socket.emit("map", map2D); // send the map to clients

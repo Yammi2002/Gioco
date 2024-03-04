@@ -73,37 +73,6 @@ window.addEventListener("keyup", (e) => {
     socket.emit("input", input);
 }); // check when inputs stop and send to the server
 
-// Ricevi l'orientamento del giocatore aggiornato dal server
-socket.on("orientation", (orientation) => {
-    // Trova il giocatore nel tuo client (ad esempio, tramite un ID)
-    const player = players.find(p => p.id === playerId);
-
-    // Se il giocatore è stato trovato
-    if (player) {
-        // Aggiorna l'orientamento del giocatore nel tuo client
-        player.orientation = orientation;
-
-        // O aggiorna l'immagine del giocatore in base all'orientamento ricevuto
-        switch (orientation) {
-            case "up":
-                // Aggiorna l'immagine del giocatore con quella che guarda verso l'alto
-                break;
-            case "down":
-                // Aggiorna l'immagine del giocatore con quella che guarda verso il basso
-                break;
-            case "left":
-                // Aggiorna l'immagine del giocatore con quella che guarda verso sinistra
-                break;
-            case "right":
-                // Aggiorna l'immagine del giocatore con quella che guarda verso destra
-                break;
-            default:
-                "right"
-                break;
-        }
-    }
-});
-
 function loop() {
     canvas.clearRect (0, 0, canvas.width, canvas.height); //to update the canvas every frame
     const TILES_IN_ROW = 22; // tiles in image row
@@ -170,11 +139,12 @@ function loop() {
                 break;
             default:
                 playerImage = marioDown; // Imposta un'immagine predefinita nel caso in cui l'orientamento non sia valido
+                break;
+        }
         canvas.drawImage(playerImage, player.x, player.y); // draw players on the canvas
     }
     
     window.requestAnimationFrame(loop);
-}
 }
 
 window.requestAnimationFrame(loop);

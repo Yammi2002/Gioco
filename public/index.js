@@ -74,12 +74,21 @@ window.addEventListener("keyup", (e) => {
 }); // check when inputs stop and send to the server
 
 function loop() {
-    canvas.clearRect (0, 0, canvas.width, canvas.height); //to update the canvas every frame
+    canvas.clearRect (0, 0, canvasEl.width, canvasEl.height); // to update the canvas every frame
+
+    const myPlayer = players.find((player) => player.id === socket.id); // find current player
+    let cameraX = 0;
+    let cameraY = 0;
+    if(myPlayer) {
+        cameraX = myPlayer.x - canvasEl.width / 2; 
+        cameraY = myPlayer.y - canvasEl.height / 2;
+    }
+
     const TILES_IN_ROW = 22; // tiles in image row
     const TILES_IN_ROW2 = 12;
 
     // drawing the lower leyer
-    for (let row = 0; row < map.length; row++) {
+    for (let row = 0; row < map.length / 2; row++) {
         for (let col = 0; col < map[0].length; col++){
             const tile = map[row][col];
             if (!tile) continue;
@@ -92,8 +101,8 @@ function loop() {
                 imageRow * TILE_SIZE,
                 TILE_SIZE,
                 TILE_SIZE,
-                col * TILE_SIZE,
-                row * TILE_SIZE,
+                col * TILE_SIZE - cameraX,
+                row * TILE_SIZE - cameraY,
                 TILE_SIZE,
                 TILE_SIZE,
                 );
@@ -114,8 +123,8 @@ function loop() {
                 imageRow * TILE_SIZE,
                 TILE_SIZE,
                 TILE_SIZE,
-                col * TILE_SIZE,
-                (row-50) * TILE_SIZE, // correct the index in order to have the layer on the other
+                col * TILE_SIZE - cameraX,
+                (row-50) * TILE_SIZE - cameraY, // correct the index in order to have the layer on the other
                 TILE_SIZE,
                 TILE_SIZE,
                 );
@@ -141,7 +150,7 @@ function loop() {
                 playerImage = marioDown; // Imposta un'immagine predefinita nel caso in cui l'orientamento non sia valido
                 break;
         }
-        canvas.drawImage(playerImage, player.x, player.y); // draw players on the canvas
+        canvas.drawImage(playerImage, player.x - cameraX, player.y - cameraY); // draw players on the canvas
     }
     
     window.requestAnimationFrame(loop);

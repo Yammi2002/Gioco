@@ -8,8 +8,8 @@ const io = new Server(httpServer);
 
 const loadMap = require('./mapLoader'); //call the module
 
-const SPEED = 5; // how fast players move
-const TICK_RATE = 30; //how fast do we want to refresh the server
+const SPEED = 3; // how fast players move
+const TICK_RATE = 60; //how fast do we want to refresh the server
 function tick() {
     for (const player of players) { //loops players
         const inputs = inputMap[player.id]; //checks players input

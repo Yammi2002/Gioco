@@ -18,6 +18,9 @@ marioUp.src = "./mario(up).png";
 const marioRight = new Image();
 marioRight.src = "./mario(right).png";
 
+const bulletImage = new Image();
+bulletImage.src = "./bullet.png"
+
 const canvasEl = document.getElementById("canvas");
 canvasEl.width = window.innerWidth;
 canvasEl.height = window.innerHeight;
@@ -25,6 +28,7 @@ const canvas = canvasEl.getContext("2d"); //using this to render
 
 let map = [[]]; //initialize the mapp
 let players = []; //keeps track of players
+let bullets = []; //keeps track of bullets
 const TILE_SIZE = 16; //pixels
 
 socket.on("connect", () => {
@@ -39,13 +43,16 @@ socket.on("players", (serverPlayers) => {
     players = serverPlayers; 
 }); //update players
 
+socket.on("bullets", (serverBullets) => {
+    bullets = serverBullets;
+}); //update bullets
+
 const input = {
     "up": false,
     "down": false,
     "left": false,
     "right": false
 }
-
 
 window.addEventListener("keydown", (e) => {
     if (e.key === "w") {
@@ -72,6 +79,14 @@ window.addEventListener("keyup", (e) => {
     }
     socket.emit("input", input);
 }); // check when inputs stop and send to the server
+
+window.addEventListener("click", (e) => {
+    const angle = Math.atan2(
+        e.clientY - canvasEl.height / 2,
+        e.clientX - canvasEl.width / 2
+    );
+    socket.emit("bullets", angle);
+}); // check when the player clicks and send to the server
 
 function loop() {
     canvas.clearRect (0, 0, canvasEl.width, canvasEl.height); // to update the canvas every frame
@@ -124,7 +139,7 @@ function loop() {
                 TILE_SIZE,
                 TILE_SIZE,
                 col * TILE_SIZE - cameraX,
-                (row-50) * TILE_SIZE - cameraY, // correct the index in order to have the layer on the other
+                (row-map.length/2) * TILE_SIZE - cameraY, // correct the index in order to have the layer on the other
                 TILE_SIZE,
                 TILE_SIZE,
                 );
@@ -153,6 +168,10 @@ function loop() {
         canvas.drawImage(playerImage, player.x - cameraX, player.y - cameraY); // draw players on the canvas
     }
     
+    for (const bullet of bullets){
+        canvas.drawImage(bulletImage, bullet.x - cameraX, bullet.y - cameraY);
+    }
+
     window.requestAnimationFrame(loop);
 }
 

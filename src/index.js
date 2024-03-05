@@ -80,12 +80,15 @@ function tick(delta) {
         for (const player of players) {
             const distance = Math.sqrt((player.x - bullet.x + 10) ** 2 + (player.y - bullet.y + 10) ** 2);
             if (distance < 8 && bullet.shooter !== player.id) { // player hit someone
-                player.x = 0; 
-                player.y = 0; // respawn the player
+                player.health -= 30;
+                if (player.health <= 0){
+                    player.x = 0;
+                    player.y = 0;
+                    player.health = 100; // restore the health
+                    const shooter = players.find((player) => player.id === bullet.shooter);
+                    shooter.score += 1; // update the score after every kill
+                }
                 bullet.timeToLive = 0; // destroy bullet after it lands
-
-                const shooter = players.find((player) => player.id === bullet.shooter);
-                shooter.score += 1; // update the score after every kill
             }
         }
     }
@@ -119,7 +122,8 @@ async function main(){
             y: 0,
             orientation: "right",
             score: 0,
-            inMovement: false
+            inMovement: false,
+            health: 100
         }); // store players
 
         socket.emit("map", map2D); // send the map to clients

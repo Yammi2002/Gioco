@@ -110,6 +110,28 @@ window.addEventListener("click", (e) => {
     socket.emit("bullets", angle);
 }); // check when the player clicks and send to the server
 
+function darwHealtbar(player, cameraX, cameraY){
+    const barWidth = 20; // Larghezza della barra
+    const barHeight = 3; // Altezza della barra
+    const maxHealth = 100; // Salute massima del giocatore
+
+    // Calcola la lunghezza della barra in base alla salute attuale del giocatore
+    const filledWidth = (player.health / maxHealth) * barWidth;
+
+    // barra bianca in sottofondo
+    canvas.fillStyle = "white";
+    canvas.fillRect(player.x - cameraX-4.5, player.y- cameraY-4, filledWidth + 3, barHeight + 2);
+
+    if (player.health > 50) {
+        canvas.fillStyle = "green"; // Colore verde per la salute alta
+    } else if (player.health > 20) {
+        canvas.fillStyle = "yellow"; // Colore giallo per la salute media
+    } else {
+        canvas.fillStyle = "red"; // Colore rosso per la salute bassa
+    }
+    canvas.fillRect(player.x - cameraX-3, player.y- cameraY-3, filledWidth, barHeight);
+}
+
 function loop() {
     
     canvas.clearRect (0, 0, canvasEl.width, canvasEl.height); // to update the canvas every frame
@@ -220,7 +242,8 @@ function loop() {
                 break;
         }
 
-        canvas.drawImage(playerImage, player.x - cameraX, player.y - cameraY); // draw players on the canvas       
+        canvas.drawImage(playerImage, player.x - cameraX, player.y - cameraY); // draw players on the canvas    
+        darwHealtbar(player, cameraX, cameraY, timer);   
     }
 
     timer++;

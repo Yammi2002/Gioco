@@ -37,11 +37,16 @@ function tick(delta) {
         bullet.y += Math.sin(bullet.angle) * BULLETS_SPEED;
         bullet.timeToLive -= delta; // decrease by delta every tick
 
+        // check if someone got shot
         for (const player of players) {
             const distance = Math.sqrt((player.x - bullet.x + 10) ** 2 + (player.y - bullet.y + 10) ** 2);
-            if (distance < 8 && bullet.shooter !== player.id) {
-                player.x = 0;
-                player.y = 0;
+            if (distance < 8 && bullet.shooter !== player.id) { // player hit someone
+                player.x = 0; 
+                player.y = 0; // respawn the player
+                bullet.timeToLive = 0; // destroy bullet after it lands
+
+                const shooter = players.find((player) => player.id === bullet.shooter);
+                shooter.score += 1; // update the score after every kill
             }
         }
     }
@@ -58,8 +63,8 @@ let bullets = []; //keeps track of bullets
 
 async function main(){
 
-    const map2D = await loadMap(); //get the map
-    io.on("connect", (socket) => { //check if someone connected
+    const map2D = await loadMap(); // load the map
+    io.on("connect", (socket) => { // check if someone connected
         console.log("user connected", socket.id);
 
         inputMap[socket.id] = {
@@ -73,14 +78,15 @@ async function main(){
             id: socket.id,
             x: 0,
             y: 0,
-            orientation: "right"
+            orientation: "right",
+            score: 0
         }); // store players
 
         socket.emit("map", map2D); // send the map to clients
 
         socket.on("input", (input) => {
             inputMap[socket.id] = input; 
-        }); //store the input and the player
+        }); // store the input and the player
 
         socket.on("disconnect", () =>{
             players = players.filter((player) => player.id !== socket.id);

@@ -92,6 +92,8 @@ function loop() {
     canvas.clearRect (0, 0, canvasEl.width, canvasEl.height); // to update the canvas every frame
 
     const myPlayer = players.find((player) => player.id === socket.id); // find current player
+
+    // camera settings
     let cameraX = 0;
     let cameraY = 0;
     if(myPlayer) {
@@ -167,9 +169,26 @@ function loop() {
         }
         canvas.drawImage(playerImage, player.x - cameraX, player.y - cameraY); // draw players on the canvas
     }
-    
+
+    if(myPlayer){
+        canvas.fillText(myPlayer.score + " Kills", canvasEl.width - 100, 100); // show the number of kills on screen
+    }
+
     for (const bullet of bullets){
-        canvas.drawImage(bulletImage, bullet.x - cameraX, bullet.y - cameraY);
+        // Salva lo stato corrente della canvas
+        canvas.save();
+
+        // Trasla la canvas al punto di origine dell'immagine ruotata
+        canvas.translate(bullet.x - cameraX, bullet.y - cameraY);
+
+        // Ruota la canvas sull'angolo desiderato (in radianti)
+        canvas.rotate(bullet.angle);
+
+        // Disegna l'immagine (che sarà ruotata)
+        canvas.drawImage(bulletImage, -bulletImage.width / 2, -bulletImage.height / 2);
+
+        // Ripristina lo stato precedente della canvas
+        canvas.restore();
     }
 
     window.requestAnimationFrame(loop);

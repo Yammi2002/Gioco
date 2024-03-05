@@ -10,6 +10,9 @@ mapImage2.src = "./forest_ [resources].png";
 const marioLeft = new Image();
 marioLeft.src = "./mario(left).png";
 
+const marioLeft2 = new Image();
+marioLeft2.src = "./mario(left2).png";
+
 const marioDown = new Image();
 marioDown.src = "./mario(down).png";
 
@@ -18,6 +21,9 @@ marioUp.src = "./mario(up).png";
 
 const marioRight = new Image();
 marioRight.src = "./mario(right).png";
+
+const marioRight2 = new Image();
+marioRight2.src = "./mario(right2).png";
 
 const bulletImage = new Image();
 bulletImage.src = "./bullet.png"
@@ -31,6 +37,9 @@ let map = [[]]; //initialize the mapp
 let players = []; //keeps track of players
 let bullets = []; //keeps track of bullets
 const TILE_SIZE = 16; //pixels
+let timer = 0;
+let alternateImage = false;
+
 
 socket.on("connect", () => {
     console.log("connected");
@@ -150,7 +159,12 @@ function loop() {
         }
     }
 
+    if (timer % 20 == 0) {
+        alternateImage = !alternateImage; // Cambia lo stato della variabile booleana
+    }
+
     for (const player of players) {
+
         let playerImage;
         switch (player.orientation) {
             case "up":
@@ -160,18 +174,31 @@ function loop() {
                 playerImage = marioDown;
                 break;
             case "left":
+                if(alternateImage && player.inMovement){
+                    playerImage = marioLeft2;
+                }
+                else{
                 playerImage = marioLeft;
+                }                
                 break;
             case "right":
+                if(alternateImage && player.inMovement){
+                    playerImage = marioRight2;
+                }
+                else{
                 playerImage = marioRight;
+                }
                 break;
             default:
                 playerImage = marioDown; // default image when the orientation cannot be determined
                 break;
         }
-        canvas.drawImage(playerImage, player.x - cameraX, player.y - cameraY); // draw players on the canvas
+
+        canvas.drawImage(playerImage, player.x - cameraX, player.y - cameraY); // draw players on the canvas       
     }
 
+    timer++;
+    console.log(timer);
     if(myPlayer){
         canvas.fillText(myPlayer.score + " Kills", canvasEl.width - 100, 100); // show the number of kills on screen
     }
@@ -192,8 +219,7 @@ function loop() {
 
         // Ripristina lo stato precedente della canvas
         canvas.restore();
-    }
-
+    } 
     window.requestAnimationFrame(loop);
 }
 

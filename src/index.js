@@ -16,45 +16,58 @@ function tick(delta) {
     for (const player of players) { //loops players
         const inputs = inputMap[player.id]; //checks players input
 
-        
+        // check when player move diagonaly
         if (inputs.right && inputs.up){
             player.x += SPEED / 1.5;
             player.y -= SPEED / 1.5;
+            player.inMovement = true;
             continue;
         }
 
         if (inputs.right && inputs.down){
             player.x += SPEED / 1.5;
             player.y += SPEED / 1.5;
+            player.inMovement = true;
             continue;
         }
 
         if (inputs.left && inputs.up){
             player.x -= SPEED / 1.5;
             player.y -= SPEED / 1.5;
+            player.inMovement = true;
             continue;
         }
 
         if (inputs.left && inputs.down){
             player.x -= SPEED / 1.5;
             player.y += SPEED / 1.5;
+            player.inMovement = true;
             continue;
         }
 
+        // ortogonal movemnets
         if(inputs.up){
             player.y -= SPEED;
             player.orientation = "up";
+            player.inMovement = true;
         } else if(inputs.down){
             player.y += SPEED;
             player.orientation = "down";
+            player.inMovement = true;
         }
 
         if(inputs.right){
             player.x += SPEED;
             player.orientation = "right";
+            player.inMovement = true;
         } else if(inputs.left){
             player.x -= SPEED;
             player.orientation = "left";
+            player.inMovement = true;
+        }
+
+        if(!inputs.right && !inputs.left && !inputs.up && !inputs.down){
+            player.inMovement = false;
         }
     }
 
@@ -105,7 +118,8 @@ async function main(){
             x: 0,
             y: 0,
             orientation: "right",
-            score: 0
+            score: 0,
+            inMovement: false
         }); // store players
 
         socket.emit("map", map2D); // send the map to clients

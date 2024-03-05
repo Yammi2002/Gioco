@@ -16,8 +16,20 @@ marioLeft2.src = "./mario(left2).png";
 const marioDown = new Image();
 marioDown.src = "./mario(down).png";
 
+const marioDown1 = new Image();
+marioDown1.src = "./mario(down1).png";
+
+const marioDown2 = new Image();
+marioDown2.src = "./mario(down2).png";
+
 const marioUp = new Image();
 marioUp.src = "./mario(up).png";
+
+const marioUp1 = new Image();
+marioUp1.src = "./mario(up1).png";
+
+const marioUp2 = new Image();
+marioUp2.src = "./mario(up2).png";
 
 const marioRight = new Image();
 marioRight.src = "./mario(right).png";

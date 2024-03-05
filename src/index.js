@@ -15,6 +15,32 @@ const TICK_RATE = 60; //how fast do we want to refresh the server
 function tick(delta) {
     for (const player of players) { //loops players
         const inputs = inputMap[player.id]; //checks players input
+
+        
+        if (inputs.right && inputs.up){
+            player.x += SPEED / 1.5;
+            player.y -= SPEED / 1.5;
+            continue;
+        }
+
+        if (inputs.right && inputs.down){
+            player.x += SPEED / 1.5;
+            player.y += SPEED / 1.5;
+            continue;
+        }
+
+        if (inputs.left && inputs.up){
+            player.x -= SPEED / 1.5;
+            player.y -= SPEED / 1.5;
+            continue;
+        }
+
+        if (inputs.left && inputs.down){
+            player.x -= SPEED / 1.5;
+            player.y += SPEED / 1.5;
+            continue;
+        }
+
         if(inputs.up){
             player.y -= SPEED;
             player.orientation = "up";
@@ -97,7 +123,7 @@ async function main(){
             bullets.push({
                 angle,
                 x: player.x,
-                y: player.y,
+                y: player.y + 8, // spawn bullets in th right place
                 shooter: socket.id,
                 timeToLive: 500
             });

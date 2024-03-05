@@ -1,5 +1,6 @@
 const socket = io(`ws://localhost:5000`);
 
+// load images
 const mapImage = new Image();
 mapImage.src = "./forest_.png"
 
@@ -52,7 +53,7 @@ const input = {
     "down": false,
     "left": false,
     "right": false
-}
+} // defines all inputs available
 
 window.addEventListener("keydown", (e) => {
     if (e.key === "w") {
@@ -89,6 +90,7 @@ window.addEventListener("click", (e) => {
 }); // check when the player clicks and send to the server
 
 function loop() {
+    
     canvas.clearRect (0, 0, canvasEl.width, canvasEl.height); // to update the canvas every frame
 
     const myPlayer = players.find((player) => player.id === socket.id); // find current player
@@ -164,7 +166,7 @@ function loop() {
                 playerImage = marioRight;
                 break;
             default:
-                playerImage = marioDown; // Imposta un'immagine predefinita nel caso in cui l'orientamento non sia valido
+                playerImage = marioDown; // default image when the orientation cannot be determined
                 break;
         }
         canvas.drawImage(playerImage, player.x - cameraX, player.y - cameraY); // draw players on the canvas
@@ -175,6 +177,7 @@ function loop() {
     }
 
     for (const bullet of bullets){
+
         // Salva lo stato corrente della canvas
         canvas.save();
 

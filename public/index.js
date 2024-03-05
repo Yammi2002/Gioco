@@ -180,10 +180,24 @@ function loop() {
         let playerImage;
         switch (player.orientation) {
             case "up":
-                playerImage = marioUp;
+                if(alternateImage && player.inMovement){
+                    playerImage = marioUp1;
+                }
+                else if(!(player.inMovement)){
+                    playerImage = marioUp;
+                }else{
+                    playerImage = marioUp2;
+                }
                 break;
             case "down":
-                playerImage = marioDown;
+                if(alternateImage && player.inMovement){
+                    playerImage = marioDown1;
+                }
+                else if(!(player.inMovement)){
+                    playerImage = marioDown;
+                }else{
+                    playerImage = marioDown2;
+                }
                 break;
             case "left":
                 if(alternateImage && player.inMovement){

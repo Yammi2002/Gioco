@@ -69,6 +69,18 @@ function tick(delta) {
         if(!inputs.right && !inputs.left && !inputs.up && !inputs.down){
             player.inMovement = false;
         }
+
+
+        for(const weapon of weapons){
+            console.log(weapon.x, weapon.y);
+            console.log(player.x, player.y);
+            if((player.x >= weapon.x -100 && player.x == weapon.x + 100) && (player.y >= weapon.y -100 && player.y == weapon.y + 100)){
+                player.weapon = weapon.type;
+                const weaponToRemove = weapons.find((weapon) => weapon.x === player.x && weapon.y === player.y);
+                weapons = weapons.filter(weapon => weapon !== weaponToRemove);
+                console.log("rimossa", weaponToRemove);
+            }
+        }
     }
 
     for (const bullet of bullets){
@@ -79,7 +91,7 @@ function tick(delta) {
         // check if someone got shot
         for (const player of players) {
             const distance = Math.sqrt((player.x - bullet.x + 10) ** 2 + (player.y - bullet.y + 10) ** 2);
-            if (distance < 8 && bullet.shooter !== player.id) { // player hit someone
+            if (distance < 8 && bullet.shooter !== player.id) { // player got shot
                 player.health -= 30;
                 if (player.health <= 0){
                     player.x = 0;
@@ -93,15 +105,17 @@ function tick(delta) {
         }
     }
 
-    bullets = bullets.filter((bullet) => bullet.timeToLive > 0); // remove bullets that are at a certain distance (timeToLive as reached 0)
+    bullets = bullets.filter((bullet) => bullet.timeToLive > 0); // remove bullets that are at a certain distance (timeToLive has reached 0)
 
     io.emit("players", players); // send players to clients
     io.emit("bullets", bullets); // send bullets to clients
+    io.emit("weapons", weapons); // send weapons to clients
 }
 
 const inputMap = {}; // empty object
 let players = []; //keeps track of players
 let bullets = []; //keeps track of bullets
+let weapons = []; //keeps track of weapons
 
 async function main(){
 
@@ -123,7 +137,8 @@ async function main(){
             orientation: "right",
             score: 0,
             inMovement: false,
-            health: 100
+            health: 100,
+            weapon: "pistol"  // default weapon
         }); // store players
 
         socket.emit("map", map2D); // send the map to clients
@@ -136,15 +151,33 @@ async function main(){
             players = players.filter((player) => player.id !== socket.id);
         }); // remove players from the array when they disconnect (and consequently from the map when the server sends it to clients)
 
+        socket.on("weapons", (x, y, type) => {
+            weapons.push({
+                x, y, // where to place it
+                type
+            });
+        });
+
         socket.on("bullets", (angle) => {
             const player = players.find((player) => player.id === socket.id);
-            bullets.push({
-                angle,
-                x: player.x,
-                y: player.y + 8, // spawn bullets in th right place
-                shooter: socket.id,
-                timeToLive: 500
-            });
+            if (player.weapon === "pistol") {
+                bullets.push({
+                    angle,
+                    x: player.x,
+                    y: player.y + 8, // spawn bullets in th right place
+                    shooter: socket.id,
+                    timeToLive: 200
+                });
+            }
+            else if (player.weapon === "rifle"){
+                bullets.push({
+                    angle,
+                    x: player.x,
+                    y: player.y + 8, // spawn bullets in th right place
+                    shooter: socket.id,
+                    timeToLive: 500
+                });  
+            }
         });
     }); 
     

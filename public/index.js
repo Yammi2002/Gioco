@@ -40,6 +40,15 @@ marioRight2.src = "./mario(right2).png";
 const bulletImage = new Image();
 bulletImage.src = "./bullet.png"
 
+const rifleImage = new Image();
+rifleImage.src = "./rifle.png"
+
+const shotgunImage = new Image();
+shotgunImage.src = "./shotgun.png"
+
+const sniperImage = new Image();
+sniperImage.src = "./sniper.png"
+
 const canvasEl = document.getElementById("canvas");
 canvasEl.width = window.innerWidth;
 canvasEl.height = window.innerHeight;
@@ -48,8 +57,10 @@ const canvas = canvasEl.getContext("2d"); //using this to render
 let map = [[]]; //initialize the mapp
 let players = []; //keeps track of players
 let bullets = []; //keeps track of bullets
+let weapons = []; //keeps track of weapons
+let possibleWeapons = ["shotgun", "rifle", "sniper"]; 
 const TILE_SIZE = 16; //pixels
-let timer = 0;
+let timer = 1;
 let alternateImage = false;
 
 
@@ -68,6 +79,10 @@ socket.on("players", (serverPlayers) => {
 socket.on("bullets", (serverBullets) => {
     bullets = serverBullets;
 }); //update bullets
+
+socket.on("weapons", (serverWeapons) => {
+    weapons = serverWeapons;
+});
 
 const input = {
     "up": false,
@@ -193,8 +208,16 @@ function loop() {
         }
     }
 
+    //animation
     if (timer % 20 == 0) {
-        alternateImage = !alternateImage; // Cambia lo stato della variabile booleana
+        alternateImage = !alternateImage; 
+    }
+
+    if (timer % 1000 == 0){
+        const x = Math.floor(Math.random() * canvasEl.width);
+        const y = Math.floor(Math.random() * canvasEl.height);
+        const type = possibleWeapons[Math.floor(Math.random() * possibleWeapons.length)];
+        socket.emit("weapons", x, y, type);
     }
 
     for (const player of players) {
@@ -269,6 +292,24 @@ function loop() {
         // Ripristina lo stato precedente della canvas
         canvas.restore();
     } 
+
+    for (const weapon of weapons){
+        let weaponImage;
+        switch(weapon.type){
+            case "rifle":
+                weaponImage = rifleImage;
+                break;
+            case "shotgun":
+                weaponImage = shotgunImage;
+                break;
+            case "sniper":
+                weaponImage = sniperImage;
+                break;
+        }
+
+        canvas.drawImage(weaponImage, weapon.x - cameraX, weapon.y - cameraY);
+    }
+
     window.requestAnimationFrame(loop);
 }
 

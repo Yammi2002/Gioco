@@ -25,7 +25,7 @@ async function loadMap() {
                     const tileIndex = row * map.width + col;
                     const tile = tiles[tileIndex];
                     
-                    if (layerIndex === 0 || (layerIndex === 1 && tile)) {
+                    if (layerIndex === 0 || (layerIndex === 1 && tile) || (layerIndex === 2 && tile) || (layerIndex === 3 && tile) || (layerIndex === 4 && tile)) {
                         tileRow.push({ id: tile.id, gid: tile.gid, layer: layerIndex });
                     } else {
                         tileRow.push(null);

@@ -2,10 +2,16 @@ const socket = io(`ws://localhost:5000`);
 
 // load images
 const mapImage = new Image();
-mapImage.src = "./images/forest_.png"
+mapImage.src = "./ground.png"
 
 const mapImage2 = new Image();
-mapImage2.src = "./images/forest_ [resources].png";
+mapImage2.src = "./streets.png";
+
+const mapImage3 = new Image();
+mapImage3.src = "./collision_obj_templates.png";
+
+const mapImage4 = new Image();
+mapImage4.src = "./ground_decor.png";
 
 const marioLeft = new Image();
 marioLeft.src = "./images/mario(left).png";
@@ -62,7 +68,7 @@ let players = []; //keeps track of players
 let bullets = []; //keeps track of bullets
 let weapons = []; //keeps track of weapons on screen
 let possibleWeapons = ["shotgun", "rifle", "pistol", "sniper"]; // all weapons that can spawn
-const TILE_SIZE = 16; //pixels
+const TILE_SIZE = 32; //pixels
 let timer = 1;
 let alternateImage = false;
 
@@ -163,17 +169,19 @@ function loop() {
         cameraY = myPlayer.y - canvasEl.height / 2;
     }
 
-    const TILES_IN_ROW = 22; // tiles in image row
-    const TILES_IN_ROW2 = 12;
+    const TILES_IN_ROW_GROUND = 10; // tiles in image row
+    const TILES_IN_ROW_STREETS = 4;
+    const TILES_IN_ROW_COLLISION = 28;
+    const TILES_IN_ROW_DECOR = 19;
 
-    // drawing the lower leyer
-    for (let row = 0; row < map.length / 2; row++) {
-        for (let col = 0; col < map[0].length; col++) {
+     // drawing the ground layer
+     for (let row = 0; row < map.length/4; row++) {
+        for (let col = 0; col < map[0].length; col++){
             const tile = map[row][col];
             if (!tile) continue;
             const { id } = tile;
-            const imageRow = parseInt(id / TILES_IN_ROW);
-            const imageCol = id % TILES_IN_ROW;
+            const imageRow = parseInt(id / TILES_IN_ROW_GROUND);
+            const imageCol = id % TILES_IN_ROW_GROUND;
             canvas.drawImage(
                 mapImage,
                 imageCol * TILE_SIZE,
@@ -184,18 +192,18 @@ function loop() {
                 row * TILE_SIZE - cameraY,
                 TILE_SIZE,
                 TILE_SIZE,
-            );
+                );
         }
     }
-
-    // darwing the upper layer
-    for (let row = 50; row < map.length; row++) {
-        for (let col = 0; col < map[0].length; col++) {
+    
+    // drawing the street layer
+    for (let row = map.length/4; row < map.length/2; row++) {
+        for (let col = 0; col < map[0].length; col++){
             const tile = map[row][col];
             if (!tile) continue; // when the tile is empty
             const { id } = tile;
-            const imageRow = parseInt(id / TILES_IN_ROW2);
-            const imageCol = id % TILES_IN_ROW2;
+            const imageRow = parseInt(id / TILES_IN_ROW_STREETS);
+            const imageCol = id % TILES_IN_ROW_STREETS;
             canvas.drawImage(
                 mapImage2,
                 imageCol * TILE_SIZE,
@@ -203,10 +211,55 @@ function loop() {
                 TILE_SIZE,
                 TILE_SIZE,
                 col * TILE_SIZE - cameraX,
-                (row - map.length / 2) * TILE_SIZE - cameraY, // correct the index in order to have the layer on the other
+                (row-map.length/4) * TILE_SIZE - cameraY, // correct the index in order to have the layer on the other
                 TILE_SIZE,
                 TILE_SIZE,
-            );
+                );
+        }
+    }
+        
+    // drawing the collision_objects layer
+    for (let row = map.length/2; row < map.length*0.75; row++) {
+        for (let col = 0; col < map[0].length; col++){
+            const tile = map[row][col];
+            if (!tile) continue; // when the tile is empty
+            const { id } = tile;
+            const imageRow = parseInt(id / TILES_IN_ROW_COLLISION);
+            const imageCol = id % TILES_IN_ROW_COLLISION;
+            canvas.drawImage(
+                mapImage3,
+                imageCol * TILE_SIZE,
+                imageRow * TILE_SIZE,
+                TILE_SIZE,
+                TILE_SIZE,
+                col * TILE_SIZE - cameraX,
+                (row-map.length/2) * TILE_SIZE - cameraY, // correct the index in order to have the layer on the other
+                TILE_SIZE,
+                TILE_SIZE,
+                );
+        }
+    }
+
+
+    // drawing the ground_decor layer
+    for (let row = map.length*0.75; row < map.length; row++) {
+        for (let col = 0; col < map[0].length; col++){
+            const tile = map[row][col];
+            if (!tile) continue; // when the tile is empty
+            const { id } = tile;
+            const imageRow = parseInt(id / TILES_IN_ROW_DECOR);
+            const imageCol = id % TILES_IN_ROW_DECOR;
+            canvas.drawImage(
+                mapImage4,
+                imageCol * TILE_SIZE,
+                imageRow * TILE_SIZE,
+                TILE_SIZE,
+                TILE_SIZE,
+                col * TILE_SIZE - cameraX,
+                (row-map.length*0.75) * TILE_SIZE - cameraY, // correct the index in order to have the layer on the other
+                TILE_SIZE,
+                TILE_SIZE,
+                );
         }
     }
 

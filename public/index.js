@@ -2,16 +2,16 @@ const socket = io(`ws://localhost:5000`);
 
 // load images
 const mapImage = new Image();
-mapImage.src = "./ground.png"
+mapImage.src = "./images/ground.png"
 
 const mapImage2 = new Image();
-mapImage2.src = "./streets.png";
+mapImage2.src = "./images/streets.png";
 
 const mapImage3 = new Image();
-mapImage3.src = "./collision_obj_templates.png";
+mapImage3.src = "./images/collision_obj_templates.png";
 
 const mapImage4 = new Image();
-mapImage4.src = "./ground_decor.png";
+mapImage4.src = "./images/ground_decor.png";
 
 const marioLeft = new Image();
 marioLeft.src = "./images/mario(left).png";
@@ -365,7 +365,7 @@ function loop() {
         canvas.drawImage(weaponImage, weapon.x - cameraX, weapon.y - cameraY);
     }
 
-    console.log(weapons);
+    //console.log(weapons);
     window.requestAnimationFrame(loop);
 }
 

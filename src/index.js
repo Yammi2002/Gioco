@@ -11,10 +11,49 @@ const loadMap = require('./mapLoader'); //call the module
 const SPEED = 3; // how fast players move
 const BULLETS_SPEED = 7;
 const TICK_RATE = 60; //how fast do we want to refresh the server
+const TILE_SIZE = 32;
 
-function tick(delta) {
+function isColliding(rect1, rect2) {
+    return (
+        rect1.x < rect2.x + rect2.w &&
+        rect1.x + rect1.w > rect2.x &&
+        rect1.y < rect2.y + rect2.h &&
+        rect1.y + rect1.h > rect2.y
+    );
+}
+function isCollidingWithObjects(player, map){
+    for (let row = map.length/2; row < map.length*0.75; row++) {
+        for (let col = 0; col < map[0].length; col++){
+            const tile = map[row][col];
+            if (
+                tile &&
+                isColliding(
+                {
+                    x: player.x,
+                    y: player.y,
+                    w:32,
+                    h:32,
+                },
+                {
+                    x: col * TILE_SIZE,
+                    y: row * TILE_SIZE,
+                    w: TILE_SIZE,
+                    h: TILE_SIZE,
+                }
+                )
+            )   {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+function tick(delta, map) {
     for (const player of players) { //loops players
         const inputs = inputMap[player.id]; //checks players input
+        const previousY = player.y;
+        const previousX = player.x;
 
         // check when player move diagonaly
         if (inputs.right && inputs.up){
@@ -54,6 +93,11 @@ function tick(delta) {
             player.y += SPEED;
             player.orientation = "down";
             player.inMovement = true;
+        }
+
+        if (isCollidingWithObjects(player, map)){
+            player.y = previousY;
+            player.x = previousX;
         }
 
         if(inputs.right){
@@ -117,6 +161,7 @@ let weapons = []; //keeps track of weapons
 async function main(){
 
     const map2D = await loadMap(); // load the map
+
     io.on("connect", (socket) => { // check if someone connected
         console.log("user connected", socket.id);
 
@@ -231,7 +276,7 @@ async function main(){
     setInterval(() => {
         const now = Date.now();
         const delta = now - lastUpdate;
-        tick(delta);
+        tick(delta, map2D);
         lastUpdate = now;
     }, 1000 / TICK_RATE);
 }

@@ -72,13 +72,9 @@ function tick(delta) {
 
 
         for(const weapon of weapons){
-            console.log(weapon.x, weapon.y);
-            console.log(player.x, player.y);
-            if((player.x >= weapon.x -100 && player.x == weapon.x + 100) && (player.y >= weapon.y -100 && player.y == weapon.y + 100)){
+            if((player.x >= weapon.x -20 && player.x <= weapon.x + 20) && (player.y >= weapon.y -20 && player.y <= weapon.y + 20)){
                 player.weapon = weapon.type;
-                const weaponToRemove = weapons.find((weapon) => weapon.x === player.x && weapon.y === player.y);
-                weapons = weapons.filter(weapon => weapon !== weaponToRemove);
-                console.log("rimossa", weaponToRemove);
+                weapons = weapons.filter(w => w !== weapon);
             }
         }
     }
@@ -138,7 +134,8 @@ async function main(){
             score: 0,
             inMovement: false,
             health: 100,
-            weapon: "pistol"  // default weapon
+            weapon: "pistol",  // default weapon
+            canShoot: true
         }); // store players
 
         socket.emit("map", map2D); // send the map to clients
@@ -152,22 +149,32 @@ async function main(){
         }); // remove players from the array when they disconnect (and consequently from the map when the server sends it to clients)
 
         socket.on("weapons", (x, y, type) => {
+
             weapons.push({
                 x, y, // where to place it
-                type
+                type,
             });
         });
 
         socket.on("bullets", (angle) => {
-            const player = players.find((player) => player.id === socket.id);
+            const player = players.find((player) => player.id === socket.id); // find the shooter
+
+            if (!player.canShoot) {
+                return;
+            }
+
+            player.canShoot = false; // delay beetween shots
+            let fireRate;
+
             if (player.weapon === "pistol") {
                 bullets.push({
                     angle,
                     x: player.x,
                     y: player.y + 8, // spawn bullets in th right place
                     shooter: socket.id,
-                    timeToLive: 200
+                    timeToLive: 200 // bullets hit close target
                 });
+                fireRate = 1000;
             }
             else if (player.weapon === "rifle"){
                 bullets.push({
@@ -175,9 +182,43 @@ async function main(){
                     x: player.x,
                     y: player.y + 8, // spawn bullets in th right place
                     shooter: socket.id,
-                    timeToLive: 500
+                    timeToLive: 500 // bullets reach farther
                 });  
+                fireRate = 300;
             }
+
+            else if (player.weapon === "shotgun"){
+                var numBullets = 5; // number of bullets firet each shot
+                var angleOffset = Math.PI / 8; // space beetween bullets
+                var centralAngle = angle - angleOffset * (numBullets / 2);
+
+                for (var i = 0; i < numBullets; i++) {
+                    var angle = centralAngle + (i * angleOffset);
+                    bullets.push({
+                    angle,
+                    x: player.x,
+                    y: player.y + 8, // spawn bullets in th right place
+                    shooter: socket.id,
+                    timeToLive: 200 // you have to be realy close to land shots
+                    });
+                    fireRate = 1000;
+                }
+            }
+
+            else if (player.weapon === "sniper"){
+                bullets.push({
+                    angle,
+                    x: player.x,
+                    y: player.y + 8, // spawn bullets in th right place
+                    shooter: socket.id,
+                    timeToLive: 1500 // bullets reach far away
+                    });
+                    fireRate = 1500;
+            }
+
+            setTimeout(() => {
+                player.canShoot = true;
+            }, fireRate);
         });
     }); 
     

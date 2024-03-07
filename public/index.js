@@ -49,6 +49,9 @@ shotgunImage.src = "./shotgun.png"
 const sniperImage = new Image();
 sniperImage.src = "./sniper.png"
 
+const pistolImage = new Image();
+pistolImage.src = "./pistol.png"
+
 const canvasEl = document.getElementById("canvas");
 canvasEl.width = window.innerWidth;
 canvasEl.height = window.innerHeight;
@@ -58,7 +61,7 @@ let map = [[]]; //initialize the mapp
 let players = []; //keeps track of players
 let bullets = []; //keeps track of bullets
 let weapons = []; //keeps track of weapons
-let possibleWeapons = ["shotgun", "rifle", "sniper"]; 
+let possibleWeapons = ["shotgun", "rifle", "pistol", "sniper"]; 
 const TILE_SIZE = 16; //pixels
 let timer = 1;
 let alternateImage = false;
@@ -270,7 +273,6 @@ function loop() {
     }
 
     timer++;
-    console.log(timer);
     if(myPlayer){
         canvas.fillText(myPlayer.score + " Kills", canvasEl.width - 100, 100); // show the number of kills on screen
     }
@@ -305,6 +307,8 @@ function loop() {
             case "sniper":
                 weaponImage = sniperImage;
                 break;
+            case "pistol":
+                weaponImage = pistolImage;
         }
 
         canvas.drawImage(weaponImage, weapon.x - cameraX, weapon.y - cameraY);

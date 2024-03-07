@@ -66,11 +66,12 @@ function tick(delta) {
             player.inMovement = true;
         }
 
+        // player standing still
         if(!inputs.right && !inputs.left && !inputs.up && !inputs.down){
             player.inMovement = false;
         }
 
-
+        // handles weapons pick-ups
         for(const weapon of weapons){
             if((player.x >= weapon.x -20 && player.x <= weapon.x + 20) && (player.y >= weapon.y -20 && player.y <= weapon.y + 20)){
                 player.weapon = weapon.type;
@@ -154,7 +155,7 @@ async function main(){
                 x, y, // where to place it
                 type,
             });
-        });
+        }); // store weapons on screen
 
         socket.on("bullets", (angle) => {
             const player = players.find((player) => player.id === socket.id); // find the shooter
@@ -164,7 +165,7 @@ async function main(){
             }
 
             player.canShoot = false; // delay beetween shots
-            let fireRate;
+            let waitTime;
 
             if (player.weapon === "pistol") {
                 bullets.push({
@@ -174,7 +175,7 @@ async function main(){
                     shooter: socket.id,
                     timeToLive: 200 // bullets hit close target
                 });
-                fireRate = 1000;
+                waitTime = 1000;
             }
             else if (player.weapon === "rifle"){
                 bullets.push({
@@ -184,7 +185,7 @@ async function main(){
                     shooter: socket.id,
                     timeToLive: 500 // bullets reach farther
                 });  
-                fireRate = 300;
+                waitTime = 300;
             }
 
             else if (player.weapon === "shotgun"){
@@ -201,7 +202,7 @@ async function main(){
                     shooter: socket.id,
                     timeToLive: 200 // you have to be realy close to land shots
                     });
-                    fireRate = 1000;
+                    waitTime = 1000;
                 }
             }
 
@@ -213,13 +214,13 @@ async function main(){
                     shooter: socket.id,
                     timeToLive: 1500 // bullets reach far away
                     });
-                    fireRate = 1500;
+                    waitTime = 1500;
             }
 
             setTimeout(() => {
                 player.canShoot = true;
-            }, fireRate);
-        });
+            }, waitTime);
+        }); // handles bullets and wait times
     }); 
     
     app.use(express.static("public"));

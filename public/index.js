@@ -365,6 +365,7 @@ function loop() {
         canvas.drawImage(weaponImage, weapon.x - cameraX, weapon.y - cameraY);
     }
 
+    console.log(weapons);
     window.requestAnimationFrame(loop);
 }
 

@@ -25,8 +25,10 @@ async function loadMap() {
                     const tileIndex = row * map.width + col;
                     const tile = tiles[tileIndex];
                     
-                    if (layerIndex === 0 || (layerIndex === 1 && tile) || (layerIndex === 2 && tile) || (layerIndex === 3 && tile) || (layerIndex === 4 && tile)) {
-                        tileRow.push({ id: tile.id, gid: tile.gid, layer: layerIndex });
+                    if (layerIndex === 0 || (layerIndex === 1 && tile) || (layerIndex === 3 && tile)) {
+                        tileRow.push({ id: tile.id, gid: tile.gid, layer: layerIndex, collide: false });
+                    } else if (layerIndex === 2 && tile){
+                        tileRow.push({ id: tile.id, gid: tile.gid, layer: layerIndex, collide: true });
                     } else {
                         tileRow.push(null);
                     }

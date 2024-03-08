@@ -13,105 +13,63 @@ const BULLETS_SPEED = 7;
 const TICK_RATE = 60; //how fast do we want to refresh the server
 const TILE_SIZE = 32;
 
-function isColliding(rect1, rect2) {
-    return (
-        rect1.x < rect2.x + rect2.w &&
-        rect1.x + rect1.w > rect2.x &&
-        rect1.y < rect2.y + rect2.h &&
-        rect1.y + rect1.h > rect2.y
-    );
-}
-function isCollidingWithObjects(player, map){
-    for (let row = map.length/2; row < map.length*0.75; row++) {
-        for (let col = 0; col < map[0].length; col++){
-            const tile = map[row][col];
-            if (
-                tile &&
-                isColliding(
-                {
-                    x: player.x,
-                    y: player.y,
-                    w:32,
-                    h:32,
-                },
-                {
-                    x: col * TILE_SIZE,
-                    y: row * TILE_SIZE,
-                    w: TILE_SIZE,
-                    h: TILE_SIZE,
-                }
-                )
-            )   {
-                return true;
+
+function tick(delta, map2D) {
+    for (const player of players) { //loops players
+
+        /*
+        for (let row = map2D.length/2; row < map2D.length*0.75; row++) {
+            for (let col = 0; col < map2D[0].length; col++){
+                const tile = map2D[row][col];
+                if (!tile) continue; 
+                console.log(tile.collide);
             }
         }
-    }
-    return false;
-}
+         */
 
-function tick(delta, map) {
-    for (const player of players) { //loops players
         const inputs = inputMap[player.id]; //checks players input
-        const previousY = player.y;
-        const previousX = player.x;
 
-        // check when player move diagonaly
-        if (inputs.right && inputs.up){
-            player.x += SPEED / 1.5;
-            player.y -= SPEED / 1.5;
-            player.inMovement = true;
-            continue;
+        let desiredX = player.x;
+        let desiredY = player.y;
+
+        // Controlla e applica i movimenti diagonalmente
+        if (inputs.right && inputs.up) {
+            desiredX += SPEED / 1.5;
+            desiredY -= SPEED / 1.5;
+        } else if (inputs.right && inputs.down) {
+            desiredX += SPEED / 1.5;
+            desiredY += SPEED / 1.5;
+        } else if (inputs.left && inputs.up) {
+            desiredX -= SPEED / 1.5;
+            desiredY -= SPEED / 1.5;
+        } else if (inputs.left && inputs.down) {
+            desiredX -= SPEED / 1.5;
+            desiredY += SPEED / 1.5;
+        } else if (inputs.up) {
+            desiredY -= SPEED;
+            player.orientation="up";
+        } else if (inputs.down) {
+            desiredY += SPEED;
+            player.orientation="down";
+        } else if (inputs.right) {
+            desiredX += SPEED;
+            player.orientation="right";
+        } else if (inputs.left) {
+            desiredX -= SPEED;
+            player.orientation="left";
         }
 
-        if (inputs.right && inputs.down){
-            player.x += SPEED / 1.5;
-            player.y += SPEED / 1.5;
-            player.inMovement = true;
-            continue;
-        }
+        // Controlla le collisioni solo se il giocatore si muove effettivamente
+        const newRow = map2D.length / 2 + Math.round(desiredY / TILE_SIZE);
+        const newCol = Math.round(desiredX / TILE_SIZE);
 
-        if (inputs.left && inputs.up){
-            player.x -= SPEED / 1.5;
-            player.y -= SPEED / 1.5;
+        // Verifica se la nuova posizione è valida
+        if (!map2D[newRow][newCol]) {
+            // Se la nuova posizione è libera, sposta il personaggio
+            player.x = desiredX;
+            player.y = desiredY;
             player.inMovement = true;
-            continue;
-        }
-
-        if (inputs.left && inputs.down){
-            player.x -= SPEED / 1.5;
-            player.y += SPEED / 1.5;
-            player.inMovement = true;
-            continue;
-        }
-
-        // ortogonal movemnets
-        if(inputs.up){
-            player.y -= SPEED;
-            player.orientation = "up";
-            player.inMovement = true;
-        } else if(inputs.down){
-            player.y += SPEED;
-            player.orientation = "down";
-            player.inMovement = true;
-        }
-
-        if (isCollidingWithObjects(player, map)){
-            player.y = previousY;
-            player.x = previousX;
-        }
-
-        if(inputs.right){
-            player.x += SPEED;
-            player.orientation = "right";
-            player.inMovement = true;
-        } else if(inputs.left){
-            player.x -= SPEED;
-            player.orientation = "left";
-            player.inMovement = true;
-        }
-
-        // player standing still
-        if(!inputs.right && !inputs.left && !inputs.up && !inputs.down){
+        } else {
             player.inMovement = false;
         }
 

@@ -63,7 +63,7 @@ canvasEl.width = window.innerWidth;
 canvasEl.height = window.innerHeight;
 const canvas = canvasEl.getContext("2d"); //using this to render 
 
-let map = [[]]; //initialize the mapp
+let map2D = [[]]; //initialize the mapp
 let players = []; //keeps track of players
 let bullets = []; //keeps track of bullets
 let weapons = []; //keeps track of weapons on screen
@@ -77,7 +77,7 @@ socket.on("connect", () => {
 });
 
 socket.on("map", (loadedMap) => {
-    map = loadedMap;
+    map2D = loadedMap;
 }); //set the map
 
 socket.on("players", (serverPlayers) => {
@@ -175,9 +175,9 @@ function loop() {
     const TILES_IN_ROW_DECOR = 19;
 
      // drawing the ground layer
-     for (let row = 0; row < map.length/4; row++) {
-        for (let col = 0; col < map[0].length; col++){
-            const tile = map[row][col];
+     for (let row = 0; row < map2D.length/4; row++) {
+        for (let col = 0; col < map2D[0].length; col++){
+            const tile = map2D[row][col];
             if (!tile) continue;
             const { id } = tile;
             const imageRow = parseInt(id / TILES_IN_ROW_GROUND);
@@ -197,9 +197,9 @@ function loop() {
     }
     
     // drawing the street layer
-    for (let row = map.length/4; row < map.length/2; row++) {
-        for (let col = 0; col < map[0].length; col++){
-            const tile = map[row][col];
+    for (let row = map2D.length/4; row < map2D.length/2; row++) {
+        for (let col = 0; col < map2D[0].length; col++){
+            const tile = map2D[row][col];
             if (!tile) continue; // when the tile is empty
             const { id } = tile;
             const imageRow = parseInt(id / TILES_IN_ROW_STREETS);
@@ -211,7 +211,7 @@ function loop() {
                 TILE_SIZE,
                 TILE_SIZE,
                 col * TILE_SIZE - cameraX,
-                (row-map.length/4) * TILE_SIZE - cameraY, // correct the index in order to have the layer on the other
+                (row-map2D.length/4) * TILE_SIZE - cameraY, // correct the index in order to have the layer on the other
                 TILE_SIZE,
                 TILE_SIZE,
                 );
@@ -219,9 +219,9 @@ function loop() {
     }
         
     // drawing the collision_objects layer
-    for (let row = map.length/2; row < map.length*0.75; row++) {
-        for (let col = 0; col < map[0].length; col++){
-            const tile = map[row][col];
+    for (let row = map2D.length/2; row < map2D.length*0.75; row++) {
+        for (let col = 0; col < map2D[0].length; col++){
+            const tile = map2D[row][col];
             if (!tile) continue; // when the tile is empty
             const { id } = tile;
             const imageRow = parseInt(id / TILES_IN_ROW_COLLISION);
@@ -233,7 +233,7 @@ function loop() {
                 TILE_SIZE,
                 TILE_SIZE,
                 col * TILE_SIZE - cameraX,
-                (row-map.length/2) * TILE_SIZE - cameraY, // correct the index in order to have the layer on the other
+                (row-map2D.length/2) * TILE_SIZE - cameraY, // correct the index in order to have the layer on the other
                 TILE_SIZE,
                 TILE_SIZE,
                 );
@@ -242,9 +242,9 @@ function loop() {
 
 
     // drawing the ground_decor layer
-    for (let row = map.length*0.75; row < map.length; row++) {
-        for (let col = 0; col < map[0].length; col++){
-            const tile = map[row][col];
+    for (let row = map2D.length*0.75; row < map2D.length; row++) {
+        for (let col = 0; col < map2D[0].length; col++){
+            const tile = map2D[row][col];
             if (!tile) continue; // when the tile is empty
             const { id } = tile;
             const imageRow = parseInt(id / TILES_IN_ROW_DECOR);
@@ -256,7 +256,7 @@ function loop() {
                 TILE_SIZE,
                 TILE_SIZE,
                 col * TILE_SIZE - cameraX,
-                (row-map.length*0.75) * TILE_SIZE - cameraY, // correct the index in order to have the layer on the other
+                (row-map2D.length*0.75) * TILE_SIZE - cameraY, // correct the index in order to have the layer on the other
                 TILE_SIZE,
                 TILE_SIZE,
                 );
@@ -365,7 +365,7 @@ function loop() {
         canvas.drawImage(weaponImage, weapon.x - cameraX, weapon.y - cameraY);
     }
 
-    //console.log(weapons);
+    console.log(map2D);
     window.requestAnimationFrame(loop);
 }
 

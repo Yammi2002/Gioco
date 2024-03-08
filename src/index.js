@@ -17,16 +17,6 @@ const TILE_SIZE = 32;
 function tick(delta, map2D) {
     for (const player of players) { //loops players
 
-        /*
-        for (let row = map2D.length/2; row < map2D.length*0.75; row++) {
-            for (let col = 0; col < map2D[0].length; col++){
-                const tile = map2D[row][col];
-                if (!tile) continue; 
-                console.log(tile.collide);
-            }
-        }
-         */
-
         const inputs = inputMap[player.id]; //checks players input
 
         let desiredX = player.x;
@@ -59,6 +49,12 @@ function tick(delta, map2D) {
             player.orientation="left";
         }
 
+        player.inMovement= true;
+
+        if(!inputs.right && !inputs.left && !inputs.up && !inputs.down) {
+            player.inMovement = false;
+        }
+
         // Controlla le collisioni solo se il giocatore si muove effettivamente
         const newRow = map2D.length / 2 + Math.round(desiredY / TILE_SIZE);
         const newCol = Math.round(desiredX / TILE_SIZE);
@@ -68,11 +64,7 @@ function tick(delta, map2D) {
             // Se la nuova posizione è libera, sposta il personaggio
             player.x = desiredX;
             player.y = desiredY;
-            player.inMovement = true;
-        } else {
-            player.inMovement = false;
-        }
-
+        } 
         // handles weapons pick-ups
         for(const weapon of weapons){
             if((player.x >= weapon.x -20 && player.x <= weapon.x + 20) && (player.y >= weapon.y -20 && player.y <= weapon.y + 20)){

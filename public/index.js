@@ -217,29 +217,6 @@ function loop() {
                 );
         }
     }
-        
-    // drawing the collision_objects layer
-    for (let row = map2D.length/2; row < map2D.length*0.75; row++) {
-        for (let col = 0; col < map2D[0].length; col++){
-            const tile = map2D[row][col];
-            if (!tile) continue; // when the tile is empty
-            const { id } = tile;
-            const imageRow = parseInt(id / TILES_IN_ROW_COLLISION);
-            const imageCol = id % TILES_IN_ROW_COLLISION;
-            canvas.drawImage(
-                mapImage3,
-                imageCol * TILE_SIZE,
-                imageRow * TILE_SIZE,
-                TILE_SIZE,
-                TILE_SIZE,
-                col * TILE_SIZE - cameraX,
-                (row-map2D.length/2) * TILE_SIZE - cameraY, // correct the index in order to have the layer on the other
-                TILE_SIZE,
-                TILE_SIZE,
-                );
-        }
-    }
-
 
     // drawing the ground_decor layer
     for (let row = map2D.length*0.75; row < map2D.length; row++) {
@@ -261,19 +238,6 @@ function loop() {
                 TILE_SIZE,
                 );
         }
-    }
-
-    //animation
-    if (timer % 20 == 0) {
-        alternateImage = !alternateImage;
-    }
-
-    // weapons spawn (need to add locations)
-    if (timer % 1000 == 0) {
-        const x = Math.floor(Math.random() * canvasEl.width);
-        const y = Math.floor(Math.random() * canvasEl.height);
-        const type = possibleWeapons[Math.floor(Math.random() * possibleWeapons.length)];
-        socket.emit("weapons", x, y, type);
     }
 
     for (const player of players) {
@@ -317,14 +281,49 @@ function loop() {
                 playerImage = marioDown; // default image when the orientation cannot be determined
                 break;
         }
+        canvas.drawImage(playerImage, player.x - cameraX, player.y - cameraY); // draw players on the canvas
+    }
+        
+    // drawing the collision_objects layer
+    for (let row = map2D.length/2; row < map2D.length*0.75; row++) {
+        for (let col = 0; col < map2D[0].length; col++){
+            const tile = map2D[row][col];
+            if (!tile) continue; // when the tile is empty
+            const { id } = tile;
+            const imageRow = parseInt(id / TILES_IN_ROW_COLLISION);
+            const imageCol = id % TILES_IN_ROW_COLLISION;
+            canvas.drawImage(
+                mapImage3,
+                imageCol * TILE_SIZE,
+                imageRow * TILE_SIZE,
+                TILE_SIZE,
+                TILE_SIZE,
+                col * TILE_SIZE - cameraX,
+                (row-map2D.length/2) * TILE_SIZE - cameraY, // correct the index in order to have the layer on the other
+                TILE_SIZE,
+                TILE_SIZE,
+                );
+        }
+    }
 
-        canvas.drawImage(playerImage, player.x - cameraX, player.y - cameraY); // draw players on the canvas    
-        darwHealtbar(player, cameraX, cameraY, timer);
+
+    //animation
+    if (timer % 20 == 0) {
+        alternateImage = !alternateImage;
+    }
+
+    // weapons spawn (need to add locations)
+    if (timer % 1000 == 0) {
+        const x = Math.floor(Math.random() * canvasEl.width);
+        const y = Math.floor(Math.random() * canvasEl.height);
+        const type = possibleWeapons[Math.floor(Math.random() * possibleWeapons.length)];
+        socket.emit("weapons", x, y, type);
     }
 
     timer++;
     if (myPlayer) {
         canvas.fillText(myPlayer.score + " Kills", canvasEl.width - 100, 100); // show the number of kills on screen
+        darwHealtbar(myPlayer, cameraX, cameraY, timer);
     }
 
     for (const bullet of bullets) {

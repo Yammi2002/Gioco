@@ -316,8 +316,12 @@ function loop() {
     if (timer % 1000 == 0) {
         const x = Math.floor(Math.random() * canvasEl.width);
         const y = Math.floor(Math.random() * canvasEl.height);
+        const row = Math.round(x / TILE_SIZE);
+        const col = Math.round(y / TILE_SIZE);
+        if (map2D[row][col].layer != 2){
         const type = possibleWeapons[Math.floor(Math.random() * possibleWeapons.length)];
         socket.emit("weapons", x, y, type);
+        }
     }
 
     timer++;
@@ -364,7 +368,6 @@ function loop() {
         canvas.drawImage(weaponImage, weapon.x - cameraX, weapon.y - cameraY);
     }
 
-    console.log(map2D);
     window.requestAnimationFrame(loop);
 }
 

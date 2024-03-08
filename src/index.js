@@ -79,6 +79,15 @@ function tick(delta, map2D) {
         bullet.y += Math.sin(bullet.angle) * BULLETS_SPEED;
         bullet.timeToLive -= delta; // decrease by delta every tick
 
+        const row = Math.round(bullet.x /TILE_SIZE) + map2D.length / 2;
+        const col = Math.round(bullet.y /TILE_SIZE);
+
+        if(map2D[row][col]){
+        if(map2D[row][col].layer == 2){
+            bullet.timeToLive = 0;
+        }
+    }
+
         // check if someone got shot
         for (const player of players) {
             const distance = Math.sqrt((player.x - bullet.x + 10) ** 2 + (player.y - bullet.y + 10) ** 2);
@@ -145,7 +154,6 @@ async function main(){
         }); // remove players from the array when they disconnect (and consequently from the map when the server sends it to clients)
 
         socket.on("weapons", (x, y, type) => {
-
             weapons.push({
                 x, y, // where to place it
                 type,

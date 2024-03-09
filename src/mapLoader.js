@@ -11,10 +11,6 @@ async function loadMap() {
     const map2D = [];
     
     for (let layerIndex = 0; layerIndex < map.layers.length; layerIndex++) {
-        const layer = map.layers[layerIndex];
-        const tiles = layer.tiles;
-    
-        const tileRow = [];
         for (let layerIndex = 0; layerIndex < map.layers.length; layerIndex++) {
             const layer = map.layers[layerIndex];
             const tiles = layer.tiles;

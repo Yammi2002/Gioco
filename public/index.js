@@ -155,6 +155,7 @@ function darwHealtbar(player, cameraX, cameraY) {
     canvas.fillRect(player.x - cameraX - 3, player.y - cameraY - 3, filledWidth, barHeight);
 } // draws the health bar
 
+
 function loop() {
 
     canvas.clearRect(0, 0, canvasEl.width, canvasEl.height); // to update the canvas every frame
@@ -367,8 +368,7 @@ function loop() {
 
         canvas.drawImage(weaponImage, weapon.x - cameraX, weapon.y - cameraY);
     }
-
+    console.log(map2D)
     window.requestAnimationFrame(loop);
 }
-
 window.requestAnimationFrame(loop);

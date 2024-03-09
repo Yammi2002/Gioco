@@ -22,7 +22,7 @@ function tick(delta, map2D) {
         let desiredX = player.x;
         let desiredY = player.y;
 
-        // Controlla e applica i movimenti diagonalmente
+        // Check when players want to move diagonaly
         if (inputs.right && inputs.up) {
             desiredX += SPEED / 1.5;
             desiredY -= SPEED / 1.5;
@@ -55,16 +55,17 @@ function tick(delta, map2D) {
             player.inMovement = false;
         }
 
-        // Controlla le collisioni solo se il giocatore si muove effettivamente
+        // Check the tile the player is standing of
         const newRow = map2D.length / 2 + Math.round(desiredY / TILE_SIZE);
         const newCol = Math.round(desiredX / TILE_SIZE);
 
-        // Verifica se la nuova posizione è valida
+        // checks for collisions
         if (!map2D[newRow][newCol]) {
-            // Se la nuova posizione è libera, sposta il personaggio
+            // if the move is valid, move the player 
             player.x = desiredX;
             player.y = desiredY;
         } 
+
         // handles weapons pick-ups
         for(const weapon of weapons){
             if((player.x >= weapon.x -20 && player.x <= weapon.x + 20) && (player.y >= weapon.y -20 && player.y <= weapon.y + 20)){
@@ -79,8 +80,8 @@ function tick(delta, map2D) {
         bullet.y += Math.sin(bullet.angle) * BULLETS_SPEED;
         bullet.timeToLive -= delta; // decrease by delta every tick
 
-        const row = Math.round(bullet.x /TILE_SIZE) + map2D.length / 2;
-        const col = Math.round(bullet.y /TILE_SIZE);
+        const row = Math.round(bullet.y /TILE_SIZE) + map2D.length / 2;
+        const col = Math.round(bullet.x /TILE_SIZE);
 
         if(map2D[row][col]){
         if(map2D[row][col].layer == 2){

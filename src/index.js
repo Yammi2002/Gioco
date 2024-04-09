@@ -15,9 +15,12 @@ const TILE_SIZE = 32;
 
 
 function tick(delta, map2D) {
+
     for (const player of players) { //loops players
 
         const inputs = inputMap[player.id]; //checks players input
+
+        if(!(inputs.right || inputs.left || inputs.down || inputs.up)) continue // if the player is still, don't check anything'
 
         let desiredX = player.x;
         let desiredY = player.y;
@@ -75,7 +78,10 @@ function tick(delta, map2D) {
         }
     }
 
+    bullets = bullets.filter((bullet) => bullet.timeToLive > 0); // remove bullets that are at a certain distance (timeToLive has reached 0)
+
     for (const bullet of bullets){
+
         bullet.x += Math.cos(bullet.angle) * BULLETS_SPEED;
         bullet.y += Math.sin(bullet.angle) * BULLETS_SPEED;
         bullet.timeToLive -= delta; // decrease by delta every tick
@@ -105,8 +111,6 @@ function tick(delta, map2D) {
             }
         }
     }
-
-    bullets = bullets.filter((bullet) => bullet.timeToLive > 0); // remove bullets that are at a certain distance (timeToLive has reached 0)
 
     io.emit("players", players); // send players to clients
     io.emit("bullets", bullets); // send bullets to clients

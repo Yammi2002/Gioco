@@ -368,7 +368,6 @@ function loop() {
 
         canvas.drawImage(weaponImage, weapon.x - cameraX, weapon.y - cameraY);
     }
-    console.log(map2D)
     window.requestAnimationFrame(loop);
 }
 window.requestAnimationFrame(loop);

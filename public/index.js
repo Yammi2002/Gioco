@@ -65,7 +65,7 @@ const canvas = canvasEl.getContext("2d"); //using this to render
 
 let map2D = [[]]; //initialize the mapp
 let players = []; //keeps track of players
-let bullets = []; //keeps track of bullets
+let bullets = new Map();
 let weapons = []; //keeps track of weapons on screen
 let possibleWeapons = ["shotgun", "rifle", "pistol", "sniper"]; // all weapons that can spawn
 const TILE_SIZE = 32; //pixels
@@ -85,7 +85,8 @@ socket.on("players", (serverPlayers) => {
 }); //update players
 
 socket.on("bullets", (serverBullets) => {
-    bullets = serverBullets;
+    bullets = new Map(JSON.parse(serverBullets));
+    console.log(bullets instanceof Map)
 }); //update bullets
 
 socket.on("weapons", (serverWeapons) => {
@@ -331,23 +332,22 @@ function loop() {
         darwHealtbar(myPlayer, cameraX, cameraY, timer);
     }
 
-    for (const bullet of bullets) {
-
+    bullets.forEach((bullet) => {
         // Salva lo stato corrente della canvas
         canvas.save();
-
+    
         // Trasla la canvas al punto di origine dell'immagine ruotata
         canvas.translate(bullet.x - cameraX, bullet.y - cameraY);
-
+    
         // Ruota la canvas sull'angolo desiderato (in radianti)
         canvas.rotate(bullet.angle);
-
+    
         // Disegna l'immagine (che sarà ruotata)
         canvas.drawImage(bulletImage, -bulletImage.width / 2, -bulletImage.height / 2);
-
+    
         // Ripristina lo stato precedente della canvas
         canvas.restore();
-    }
+    });
 
     for (const weapon of weapons) {
         // choose weapon image

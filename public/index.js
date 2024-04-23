@@ -299,7 +299,7 @@ function loop() {
                 imageRow * TILE_SIZE,
                 TILE_SIZE,
                 TILE_SIZE,
-                col * TILE_SIZE - cameraX,
+                col * TILE_SIZE - cameraX - 8,
                 (row-map2D.length/2) * TILE_SIZE - cameraY, // correct the index in order to have the layer on the other
                 TILE_SIZE,
                 TILE_SIZE,

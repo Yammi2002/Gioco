@@ -61,9 +61,9 @@ function tick(delta, map2D) {
         // Check the tile the player is standing of
         const newRow = map2D.length / 2 + Math.round(desiredY / TILE_SIZE);
         const newCol = Math.round(desiredX / TILE_SIZE);
-
+        const newCol2 = Math.round(desiredX - 8 / TILE_SIZE);
         // checks for collisions
-        if (!map2D[newRow][newCol]) {
+        if (!map2D[newRow][newCol] && !map2D[newRow][newCol ] ) {
             // if the move is valid, move the player 
             player.x = desiredX;
             player.y = desiredY;

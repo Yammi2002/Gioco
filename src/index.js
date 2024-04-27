@@ -78,9 +78,7 @@ function tick(delta, map2D) {
         }
     }
 
-    bullets = bullets.filter((bullet) => bullet.timeToLive > 0); // remove bullets that are at a certain distance (timeToLive has reached 0)
-
-    for (const bullet of bullets){
+    for (let [key, bullet] of bullets){
 
         bullet.x += Math.cos(bullet.angle) * BULLETS_SPEED;
         bullet.y += Math.sin(bullet.angle) * BULLETS_SPEED;
@@ -110,16 +108,19 @@ function tick(delta, map2D) {
                 bullet.timeToLive = 0; // destroy bullet after it lands
             }
         }
+        if (bullet.timeToLive <= 0) {
+            bullets.delete(key);
+        }
     }
 
     io.emit("players", players); // send players to clients
-    io.emit("bullets", bullets); // send bullets to clients
+    io.emit("bullets", JSON.stringify(Array.from(bullets))); // send bullets to clients
     io.emit("weapons", weapons); // send weapons to clients
 }
 
 const inputMap = {}; // empty object
 let players = []; //keeps track of players
-let bullets = []; //keeps track of bullets
+let bullets = new Map(); //keeps track of bullets
 let weapons = []; //keeps track of weapons
 
 async function main(){
@@ -176,7 +177,7 @@ async function main(){
             let waitTime;
 
             if (player.weapon === "pistol") {
-                bullets.push({
+                bullets.set(Date.now() + Math.random().toString(36), {
                     angle,
                     x: player.x,
                     y: player.y + 8, // spawn bullets in th right place
@@ -203,7 +204,7 @@ async function main(){
 
                 for (var i = 0; i < numBullets; i++) {
                     var angle = centralAngle + (i * angleOffset);
-                    bullets.push({
+                    bullets.set(Date.now() + Math.random().toString(36),{
                     angle,
                     x: player.x,
                     y: player.y + 8, // spawn bullets in th right place
@@ -215,7 +216,7 @@ async function main(){
             }
 
             else if (player.weapon === "sniper"){
-                bullets.push({
+                bullets.set(Date.now() + Math.random().toString(36),{
                     angle,
                     x: player.x,
                     y: player.y + 8, // spawn bullets in th right place

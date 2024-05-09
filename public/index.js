@@ -85,8 +85,8 @@ socket.on("players", (serverPlayers) => {
 }); //update players
 
 socket.on("bullets", (serverBullets) => {
-    bullets = new Map(JSON.parse(serverBullets));
-    console.log(bullets instanceof Map)}); //update bullets
+    bullets = new Map(JSON.parse(serverBullets));}
+);
 
 socket.on("weapons", (serverWeapons) => {
     weapons = serverWeapons;
@@ -165,19 +165,23 @@ function loop() {
     // camera settings
     let cameraX = 0;
     let cameraY = 0;
+    let player_tile_x = 10;
+    let player_tile_y = 10;
     if (myPlayer) {
         cameraX = myPlayer.x - canvasEl.width / 2;
         cameraY = myPlayer.y - canvasEl.height / 2;
+        player_tile_x = Math.floor(myPlayer.x / TILE_SIZE);
+        player_tile_y = Math.floor(myPlayer.y / TILE_SIZE);
+        if(player_tile_y < 10) player_tile_y = 10;
     }
-
     const TILES_IN_ROW_GROUND = 10; // tiles in image row
     const TILES_IN_ROW_STREETS = 4;
     const TILES_IN_ROW_COLLISION = 28;
     const TILES_IN_ROW_DECOR = 19;
 
-     // drawing the ground layer
-     for (let row = 0; row < map2D.length/4; row++) {
-        for (let col = 0; col < map2D[0].length; col++){
+     // drawing the ground layer    
+     for (let row = player_tile_y - 10; row < map2D.length/4 - player_tile_y - 10; row++) {
+        for (let col = player_tile_x -15; col < player_tile_x +15; col++){
             const tile = map2D[row][col];
             if (!tile) continue;
             const { id } = tile;
@@ -306,7 +310,6 @@ function loop() {
                 );
         }
     }
-
 
     //animation
     if (timer % 20 == 0) {

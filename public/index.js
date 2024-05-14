@@ -65,7 +65,7 @@ const canvas = canvasEl.getContext("2d"); //using this to render
 
 let map2D = [[]]; //initialize the mapp
 let players = []; //keeps track of players
-let bullets = new Map();
+let bullets = []; //keeps track of bullets
 let weapons = []; //keeps track of weapons on screen
 let possibleWeapons = ["shotgun", "rifle", "pistol", "sniper"]; // all weapons that can spawn
 const TILE_SIZE = 32; //pixels
@@ -85,8 +85,8 @@ socket.on("players", (serverPlayers) => {
 }); //update players
 
 socket.on("bullets", (serverBullets) => {
-    bullets = new Map(JSON.parse(serverBullets));}
-);
+    bullets = serverBullets;
+});
 
 socket.on("weapons", (serverWeapons) => {
     weapons = serverWeapons;
@@ -172,6 +172,7 @@ function loop() {
         cameraY = myPlayer.y - canvasEl.height / 2;
         player_tile_x = Math.floor(myPlayer.x / TILE_SIZE);
         player_tile_y = Math.floor(myPlayer.y / TILE_SIZE);
+        if(player_tile_x < 15) player_tile_x = 15;
         if(player_tile_y < 10) player_tile_y = 10;
     }
     const TILES_IN_ROW_GROUND = 10; // tiles in image row
@@ -179,9 +180,9 @@ function loop() {
     const TILES_IN_ROW_COLLISION = 28;
     const TILES_IN_ROW_DECOR = 19;
 
-     // drawing the ground layer    
-     for (let row = player_tile_y - 10; row < map2D.length/4 - player_tile_y - 10; row++) {
-        for (let col = player_tile_x -15; col < player_tile_x +15; col++){
+    // ground
+    for (let row = player_tile_y - 10; row < map2D.length/4 - player_tile_y - 5; row++) {
+        for (let col = player_tile_x - 20; col < player_tile_x + 10; col++) {
             const tile = map2D[row][col];
             if (!tile) continue;
             const { id } = tile;
@@ -334,7 +335,7 @@ function loop() {
         darwHealtbar(myPlayer, cameraX, cameraY, timer);
     }
 
-    bullets.forEach((bullet) => {
+    for (const bullet of bullets) {
 
         // Salva lo stato corrente della canvas
         canvas.save();
@@ -350,7 +351,7 @@ function loop() {
 
         // Ripristina lo stato precedente della canvas
         canvas.restore();
-    });
+    };
 
     for (const weapon of weapons) {
         // choose weapon image
@@ -372,5 +373,5 @@ function loop() {
         canvas.drawImage(weaponImage, weapon.x - cameraX, weapon.y - cameraY);
     }
     window.requestAnimationFrame(loop);
-}
+}  
 window.requestAnimationFrame(loop);

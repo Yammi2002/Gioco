@@ -59,13 +59,18 @@ function tick(delta, map2D) {
         // Check the tile the player is standing of
         const newRow = map2D.length / 2 + Math.round(desiredY / TILE_SIZE);
         const newCol = Math.round(desiredX / TILE_SIZE);
-        const newCol2 = Math.round(desiredX - 8 / TILE_SIZE);
-        // checks for collisions
-        if (!map2D[newRow][newCol] && !map2D[newRow][newCol ] ) {
-            // if the move is valid, move the player 
-            player.x = desiredX;
-            player.y = desiredY;
+        const newRow2 = Math.round(desiredY / TILE_SIZE);
+        const newCol2 = Math.round(desiredX / TILE_SIZE);
+        console.log(newRow2);
+        // checks for collisions and map border
+        if ((!map2D[newRow][newCol] && !map2D[newRow][newCol ]) ) {
+            if ((newCol2>0 && newCol2<100 ) && (newRow2>0 && newRow2<100)){
+                // if the move is valid, move the player 
+                player.x = desiredX;
+                player.y = desiredY;
+            }
         } 
+
 
         // handles weapons pick-ups
         for(const weapon of weapons){
@@ -135,8 +140,8 @@ async function main(){
 
         players.push({
             id: socket.id,
-            x: 0,
-            y: 0,
+            x: 100,
+            y: 100,
             orientation: "right",
             score: 0,
             inMovement: false,

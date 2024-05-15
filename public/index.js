@@ -182,7 +182,7 @@ function loop() {
 
     // ground
     for (let row = player_tile_y - 10; row < map2D.length/4 - player_tile_y - 5; row++) {
-        for (let col = player_tile_x - 20; col < player_tile_x + 10; col++) {
+        for (let col = player_tile_x - 20; col < player_tile_x + 20; col++) {
             const tile = map2D[row][col];
             if (!tile) continue;
             const { id } = tile;
@@ -271,16 +271,16 @@ function loop() {
                 break;
             case "left":
                 if (alternateImage && player.inMovement) {
-                    playerImage = marioLeft2;
-                } else {
                     playerImage = marioLeft;
+                } else {
+                    playerImage = marioLeft2;
                 }
                 break;
             case "right":
                 if (alternateImage && player.inMovement) {
-                    playerImage = marioRight2;
-                } else {
                     playerImage = marioRight;
+                } else {
+                    playerImage = marioRight2;
                 }
                 break;
             default:

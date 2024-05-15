@@ -20,8 +20,10 @@ function tick(delta, map2D) {
 
         const inputs = inputMap[player.id]; //checks players input
 
-        if(!(inputs.right || inputs.left || inputs.down || inputs.up)) continue // if the player is still, don't check anything'
-
+        if(!(inputs.right || inputs.left || inputs.down || inputs.up)) {
+            player.inMovement = false;
+            continue // if the player is still, don't check anything'
+        }
         let desiredX = player.x;
         let desiredY = player.y;
 
@@ -50,13 +52,9 @@ function tick(delta, map2D) {
         } else if (inputs.left) {
             desiredX -= SPEED;
             player.orientation="left";
-        }
+        } 
 
         player.inMovement= true;
-
-        if(!inputs.right && !inputs.left && !inputs.up && !inputs.down) {
-            player.inMovement = false;
-        }
 
         // Check the tile the player is standing of
         const newRow = map2D.length / 2 + Math.round(desiredY / TILE_SIZE);

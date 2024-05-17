@@ -163,6 +163,7 @@ function loop() {
     const myPlayer = players.find((player) => player.id === socket.id); // find current player
 
     // camera settings
+
     let cameraX = 0;
     let cameraY = 0;
     let player_tile_x = 10;
@@ -172,8 +173,18 @@ function loop() {
         cameraY = myPlayer.y - canvasEl.height / 2;
         player_tile_x = Math.floor(myPlayer.x / TILE_SIZE);
         player_tile_y = Math.floor(myPlayer.y / TILE_SIZE);
-        if(player_tile_x < 15) player_tile_x = 15;
-        if(player_tile_y < 10) player_tile_y = 10;
+        console.log(cameraX)
+            // block the camera at borders
+        if (player_tile_x < 15) {
+            player_tile_x = 15;
+            cameraX = -265;
+        }
+        if (player_tile_y < 10) {
+            player_tile_y = 10;
+            cameraY = -50;
+        }
+        
+
     }
     const TILES_IN_ROW_GROUND = 10; // tiles in image row
     const TILES_IN_ROW_STREETS = 4;

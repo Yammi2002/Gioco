@@ -61,7 +61,6 @@ function tick(delta, map2D) {
         const newCol = Math.round(desiredX / TILE_SIZE);
         const newRow2 = Math.round(desiredY / TILE_SIZE);
         const newCol2 = Math.round(desiredX / TILE_SIZE);
-        console.log(newRow2);
         // checks for collisions and map border
         if ((!map2D[newRow][newCol] && !map2D[newRow][newCol ]) ) {
             if ((newCol2>0 && newCol2<100 ) && (newRow2>0 && newRow2<100)){
@@ -140,8 +139,8 @@ async function main(){
 
         players.push({
             id: socket.id,
-            x: 100,
-            y: 100,
+            x: 600,
+            y: 400,
             orientation: "right",
             score: 0,
             inMovement: false,

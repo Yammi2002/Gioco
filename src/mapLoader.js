@@ -2,7 +2,7 @@ const tmx = require('tmx-parser');
 
 async function loadMap() {
     const map = await new Promise((resolve, reject) =>{
-        tmx.parseFile("./src/map.tmx", function(err, loadedMap) {
+        tmx.parseFile("./src/newmap.tmx", function(err, loadedMap) {
             if (err) return reject(err);
             resolve(loadedMap);
         }); //load the map in asyncronous way(?) 

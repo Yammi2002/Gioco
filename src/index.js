@@ -182,7 +182,7 @@ async function main(){
                     x: player.x,
                     y: player.y + 8, // spawn bullets in th right place
                     shooter: socket.id,
-                    timeToLive: 200 // bullets hit close target
+                    timeToLive: 500 // bullets hit close target
                 });
                 waitTime = 1000;
             }
@@ -192,7 +192,7 @@ async function main(){
                     x: player.x,
                     y: player.y + 8, // spawn bullets in th right place
                     shooter: socket.id,
-                    timeToLive: 500 // bullets reach farther
+                    timeToLive: 1000 // bullets reach farther
                 });  
                 waitTime = 300;
             }
@@ -209,7 +209,7 @@ async function main(){
                     x: player.x,
                     y: player.y + 8, // spawn bullets in th right place
                     shooter: socket.id,
-                    timeToLive: 200 // you have to be realy close to land shots
+                    timeToLive: 300 // you have to be realy close to land shots
                     });
                     waitTime = 1000;
                 }

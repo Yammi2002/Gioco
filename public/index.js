@@ -202,7 +202,7 @@ function loop() {
     const TILES_IN_ROW_STREETS = 4;
     const TILES_IN_ROW_COLLISION = 28;
     const TILES_IN_ROW_DECOR = 19;
-
+/*
     // ground
     for (let row = player_tile_y - 10; row < map2D.length/4 - player_tile_y - 5; row++) {
         for (let col = player_tile_x - 20; col < player_tile_x + 20; col++) {
@@ -223,7 +223,28 @@ function loop() {
                 TILE_SIZE,
                 );
         }
+    }*/
+    for (let row = Math.max(0, player_tile_y - 15); row < Math.min(map2D.length, player_tile_y + 15); row++) {
+        for (let col = Math.max(0, player_tile_x - 30); col < Math.min(map2D[row].length, player_tile_x + 30); col++) {
+            const tile = map2D[row][col];
+            if (!tile) continue;
+            const { id } = tile;
+            const imageRow = parseInt(id / TILES_IN_ROW_GROUND);
+            const imageCol = id % TILES_IN_ROW_GROUND;
+            canvas.drawImage(
+                mapImage,
+                imageCol * TILE_SIZE,
+                imageRow * TILE_SIZE,
+                TILE_SIZE,
+                TILE_SIZE,
+                col * TILE_SIZE - cameraX,
+                row * TILE_SIZE - cameraY,
+                TILE_SIZE,
+                TILE_SIZE
+            );
+        }
     }
+    
     
     // drawing the street layer
     for (let row = map2D.length/4; row < map2D.length/2; row++) {

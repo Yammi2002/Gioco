@@ -173,12 +173,11 @@ function loop() {
         cameraY = myPlayer.y - canvasEl.height / 2;
         player_tile_x = Math.floor(myPlayer.x / TILE_SIZE);
         player_tile_y = Math.floor(myPlayer.y / TILE_SIZE);
+        console.log(cameraX)
             // block the camera at borders
-
-        //LEFT BORDER
-        if (player_tile_x < 25) {
-            player_tile_x = 25;
-            cameraX = 50;
+        if (player_tile_x < 15) {
+            player_tile_x = 15;
+            cameraX = -265;
         }
         //UP BORDER
         if (player_tile_y < 12) {
@@ -194,6 +193,9 @@ function loop() {
         if (player_tile_y > 87) {
             player_tile_y = 87;
             cameraY = 2460;
+        if (player_tile_y < 10) {
+            player_tile_y = 10;
+            cameraY = -50;
         }
         
 
@@ -202,17 +204,10 @@ function loop() {
     const TILES_IN_ROW_STREETS = 4;
     const TILES_IN_ROW_COLLISION = 28;
     const TILES_IN_ROW_DECOR = 19;
-<<<<<<< Updated upstream
 
     // ground
     for (let row = player_tile_y - 10; row < map2D.length/4 - player_tile_y - 5; row++) {
         for (let col = player_tile_x - 20; col < player_tile_x + 20; col++) {
-=======
-    
-     // drawing the ground layer    
-     for (let row = player_tile_y - 10; row < map2D.length/4 - player_tile_y - 10; row++) {
-        for (let col = player_tile_x -15; col < player_tile_x +15; col++){
->>>>>>> Stashed changes
             const tile = map2D[row][col];
             if (!tile) continue;
             const { id } = tile;

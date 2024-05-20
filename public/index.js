@@ -179,6 +179,7 @@ function loop() {
             player_tile_x = 15;
             cameraX = -265;
         }
+<<<<<<< HEAD
         //UP BORDER
         if (player_tile_y < 12) {
             player_tile_y = 12;
@@ -193,6 +194,8 @@ function loop() {
         if (player_tile_y > 87) {
             player_tile_y = 87;
             cameraY = 2460;
+=======
+>>>>>>> parent of b5d550f (new map, fixed border camera)
         if (player_tile_y < 10) {
             player_tile_y = 10;
             cameraY = -50;

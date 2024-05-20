@@ -173,13 +173,13 @@ function loop() {
         cameraY = myPlayer.y - canvasEl.height / 2;
         player_tile_x = Math.floor(myPlayer.x / TILE_SIZE);
         player_tile_y = Math.floor(myPlayer.y / TILE_SIZE);
-        console.log(cameraX)
             // block the camera at borders
-        if (player_tile_x < 15) {
-            player_tile_x = 15;
-            cameraX = -265;
+
+        //LEFT BORDER
+        if (player_tile_x < 25) {
+            player_tile_x = 25;
+            cameraX = 50;
         }
-<<<<<<< HEAD
         //UP BORDER
         if (player_tile_y < 12) {
             player_tile_y = 12;
@@ -194,11 +194,6 @@ function loop() {
         if (player_tile_y > 87) {
             player_tile_y = 87;
             cameraY = 2460;
-=======
->>>>>>> parent of b5d550f (new map, fixed border camera)
-        if (player_tile_y < 10) {
-            player_tile_y = 10;
-            cameraY = -50;
         }
         
 

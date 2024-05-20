@@ -190,7 +190,7 @@ function loop() {
             player_tile_x = 76;
             cameraX = 1720;
         }
-        //LEFT BORDER
+        //DOWN BORDER
         if (player_tile_y > 87) {
             player_tile_y = 87;
             cameraY = 2460;

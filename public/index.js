@@ -202,10 +202,17 @@ function loop() {
     const TILES_IN_ROW_STREETS = 4;
     const TILES_IN_ROW_COLLISION = 28;
     const TILES_IN_ROW_DECOR = 19;
+<<<<<<< Updated upstream
 
     // ground
     for (let row = player_tile_y - 10; row < map2D.length/4 - player_tile_y - 5; row++) {
         for (let col = player_tile_x - 20; col < player_tile_x + 20; col++) {
+=======
+    
+     // drawing the ground layer    
+     for (let row = player_tile_y - 10; row < map2D.length/4 - player_tile_y - 10; row++) {
+        for (let col = player_tile_x -15; col < player_tile_x +15; col++){
+>>>>>>> Stashed changes
             const tile = map2D[row][col];
             if (!tile) continue;
             const { id } = tile;

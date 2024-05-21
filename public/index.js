@@ -202,28 +202,9 @@ function loop() {
     const TILES_IN_ROW_STREETS = 4;
     const TILES_IN_ROW_COLLISION = 28;
     const TILES_IN_ROW_DECOR = 19;
-/*
+
     // ground
-    for (let row = player_tile_y - 10; row < map2D.length/4 - player_tile_y - 5; row++) {
-        for (let col = player_tile_x - 20; col < player_tile_x + 20; col++) {
-            const tile = map2D[row][col];
-            if (!tile) continue;
-            const { id } = tile;
-            const imageRow = parseInt(id / TILES_IN_ROW_GROUND);
-            const imageCol = id % TILES_IN_ROW_GROUND;
-            canvas.drawImage(
-                mapImage,
-                imageCol * TILE_SIZE,
-                imageRow * TILE_SIZE,
-                TILE_SIZE,
-                TILE_SIZE,
-                col * TILE_SIZE - cameraX,
-                row * TILE_SIZE - cameraY,
-                TILE_SIZE,
-                TILE_SIZE,
-                );
-        }
-    }*/
+
     for (let row = Math.max(0, player_tile_y - 15); row < Math.min(map2D.length, player_tile_y + 15); row++) {
         for (let col = Math.max(0, player_tile_x - 30); col < Math.min(map2D[row].length, player_tile_x + 30); col++) {
             const tile = map2D[row][col];
@@ -247,8 +228,8 @@ function loop() {
     
     
     // drawing the street layer
-    for (let row = map2D.length/4; row < map2D.length/2; row++) {
-        for (let col = 0; col < map2D[0].length; col++){
+    for (let row = Math.max(map2D.length/4, (map2D.length/4) + player_tile_y - 15); row < Math.min(map2D.length/2, (map2D.length/4) + player_tile_y + 15); row++) {
+        for (let col = Math.max(0, player_tile_x - 30); col < Math.min(map2D[0].length, player_tile_x + 30); col++) {
             const tile = map2D[row][col];
             if (!tile) continue; // when the tile is empty
             const { id } = tile;
@@ -269,8 +250,8 @@ function loop() {
     }
 
     // drawing the ground_decor layer
-    for (let row = map2D.length*0.75; row < map2D.length; row++) {
-        for (let col = 0; col < map2D[0].length; col++){
+    for (let row = Math.max(map2D.length*0.75, (map2D.length*0.75) + player_tile_y - 15); row < Math.min( map2D.length, (map2D.length*0.75) + player_tile_y + 15); row++) {
+        for (let col = Math.max(0, player_tile_x - 30); col < Math.min(map2D[0].length, player_tile_x + 30); col++) {
             const tile = map2D[row][col];
             if (!tile) continue; // when the tile is empty
             const { id } = tile;
@@ -335,8 +316,8 @@ function loop() {
     }
         
     // drawing the collision_objects layer
-    for (let row = map2D.length/2; row < map2D.length*0.75; row++) {
-        for (let col = 0; col < map2D[0].length; col++){
+    for (let row = Math.max( map2D.length/2, ( map2D.length/2) + player_tile_y - 15); row < Math.min(map2D.length*0.75, ( map2D.length/2) + player_tile_y + 15); row++) {
+        for (let col = Math.max(0, player_tile_x - 30); col < Math.min(map2D[0].length, player_tile_x + 30); col++) {
             const tile = map2D[row][col];
             if (!tile) continue; // when the tile is empty
             const { id } = tile;

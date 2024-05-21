@@ -179,59 +179,37 @@ function loop() {
         player_tile_x = Math.floor(myPlayer.x / TILE_SIZE);
         player_tile_y = Math.floor(myPlayer.y / TILE_SIZE);
         // block the camera at borders
-
         //LEFT BORDER
-        if (player_tile_x == 25) {
-            cameraSaveX = cameraX;
-        } else if (player_tile_x < 25){
-            border1 = true;
-        } else if (player_tile_x > 25 && player_tile_x < 76) {
-            border1 = false;
-        }
-        if (border1 == true){
+        if (player_tile_x <= 25) {
+            if (player_tile_x == 25) {
+                cameraSaveX = cameraX;
+            }
             player_tile_x = 25;
             cameraX = cameraSaveX;
-        }
-        //UP BORDER
-        if (player_tile_y == 12) {
-            cameraSaveX = cameraX;
-        } else if (player_tile_y < 12){
-            border2 = true;
-        } else if (player_tile_y > 12 && player_tile_y < 87){
-            border2 = false;
-        }
-        if (border2 == true){
-            player_tile_y = 12;
-            cameraY = cameraSaveY;
-        }
-
-        //RIGHT BORDER
-        if (player_tile_x == 76) {
-            cameraSaveX = cameraX;
-        } else if (player_tile_x > 76){
-            border3 = true;
-        } else if (player_tile_x > 25 && player_tile_x < 76) {
-            border3 = false;
-        }
-        if (border3 == true){
+        } else if (player_tile_x >= 76) {
+            //RIGHT BORDER
+            if (player_tile_x == 76) {
+                cameraSaveX = cameraX;
+            }
             player_tile_x = 76;
             cameraX = cameraSaveX;
         }
-        
-        //DOWN BORDER
-        if (player_tile_y == 87) {
-            cameraSaveY = cameraY;
-        } else if (player_tile_y > 87){
-            border4 = true;
-        } else if (player_tile_y > 12 && player_tile_y < 87){
-            border4 = false;
-        }
-        if (border4 == true){
+
+        //UP BORDER
+        if (player_tile_y <= 12) {
+            if (player_tile_y == 12) {
+                cameraSaveY = cameraY;
+            }
+            player_tile_y = 12;
+            cameraY = cameraSaveY;
+        } else if (player_tile_y >= 87) {
+            //DOWN BORDER
+            if (player_tile_y == 87) {
+                cameraSaveY = cameraY;
+            }
             player_tile_y = 87;
             cameraY = cameraSaveY;
         }
-        
-
     }
     const TILES_IN_ROW_GROUND = 10; // tiles in image row
     const TILES_IN_ROW_STREETS = 4;

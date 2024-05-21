@@ -155,7 +155,10 @@ function darwHealtbar(player, cameraX, cameraY) {
     canvas.fillRect(player.x - cameraX - 3, player.y - cameraY - 3, filledWidth, barHeight);
 } // draws the health bar
 
-
+let border1 = false;
+let border2 = false;
+let cameraSaveX = 0;
+let cameraSaveY = 0;
 function loop() {
 
     canvas.clearRect(0, 0, canvasEl.width, canvasEl.height); // to update the canvas every frame
@@ -173,24 +176,40 @@ function loop() {
         cameraY = myPlayer.y - canvasEl.height / 2;
         player_tile_x = Math.floor(myPlayer.x / TILE_SIZE);
         player_tile_y = Math.floor(myPlayer.y / TILE_SIZE);
+        console.log(cameraX);
             // block the camera at borders
 
         //LEFT BORDER
-        if (player_tile_x < 25) {
+        if (player_tile_x == 25) {
+            cameraSaveX = cameraX;
+        } else if (player_tile_x < 25){
+            border1 = true;
+        } else {
+            border1 = false;
+        }
+        if (border1 == true){
             player_tile_x = 25;
-            cameraX = 50;
+            cameraX = cameraSaveX;
         }
         //UP BORDER
-        if (player_tile_y < 12) {
-            player_tile_y = 12;
-            cameraY = 10;
+        if (player_tile_y == 12) {
+            cameraSaveX = cameraX;
+        } else if (player_tile_y < 12){
+            border2 = true;
+        } else {
+            border2 = false;
         }
+        if (border2 == true){
+            player_tile_y = 12;
+            cameraY = cameraSaveY;
+        }
+
         //RIGHT BORDER
         if (player_tile_x > 76) {
             player_tile_x = 76;
             cameraX = 1720;
         }
-        //LEFT BORDER
+        //DOWN BORDER
         if (player_tile_y > 87) {
             player_tile_y = 87;
             cameraY = 2460;

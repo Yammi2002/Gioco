@@ -157,6 +157,8 @@ function darwHealtbar(player, cameraX, cameraY) {
 
 let border1 = false;
 let border2 = false;
+let border3 = false;
+let border4 = false;
 let cameraSaveX = 0;
 let cameraSaveY = 0;
 function loop() {
@@ -176,15 +178,14 @@ function loop() {
         cameraY = myPlayer.y - canvasEl.height / 2;
         player_tile_x = Math.floor(myPlayer.x / TILE_SIZE);
         player_tile_y = Math.floor(myPlayer.y / TILE_SIZE);
-        console.log(cameraX);
-            // block the camera at borders
+        // block the camera at borders
 
         //LEFT BORDER
         if (player_tile_x == 25) {
             cameraSaveX = cameraX;
         } else if (player_tile_x < 25){
             border1 = true;
-        } else {
+        } else if (player_tile_x > 25 && player_tile_x < 76) {
             border1 = false;
         }
         if (border1 == true){
@@ -196,7 +197,7 @@ function loop() {
             cameraSaveX = cameraX;
         } else if (player_tile_y < 12){
             border2 = true;
-        } else {
+        } else if (player_tile_y > 12 && player_tile_y < 87){
             border2 = false;
         }
         if (border2 == true){
@@ -205,14 +206,29 @@ function loop() {
         }
 
         //RIGHT BORDER
-        if (player_tile_x > 76) {
-            player_tile_x = 76;
-            cameraX = 1720;
+        if (player_tile_x == 76) {
+            cameraSaveX = cameraX;
+        } else if (player_tile_x > 76){
+            border3 = true;
+        } else if (player_tile_x > 25 && player_tile_x < 76) {
+            border3 = false;
         }
+        if (border3 == true){
+            player_tile_x = 76;
+            cameraX = cameraSaveX;
+        }
+        
         //DOWN BORDER
-        if (player_tile_y > 87) {
+        if (player_tile_y == 87) {
+            cameraSaveY = cameraY;
+        } else if (player_tile_y > 87){
+            border4 = true;
+        } else if (player_tile_y > 12 && player_tile_y < 87){
+            border4 = false;
+        }
+        if (border4 == true){
             player_tile_y = 87;
-            cameraY = 2460;
+            cameraY = cameraSaveY;
         }
         
 

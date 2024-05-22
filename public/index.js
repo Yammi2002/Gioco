@@ -1,4 +1,4 @@
-const socket = io(`ws://localhost:5000`);
+const socket = io(`ws://192.168.0.102:5000`); //to be filled with serverPC ip address
 
 // load images
 const mapImage = new Image();
@@ -377,21 +377,21 @@ function loop() {
         darwHealtbar(myPlayer, cameraX, cameraY, timer);
 
         canvas.fillStyle = 'white';
-        canvas.fillRect(canvasEl.width - 100, 550, 70, 20);
-        canvas.fillRect(canvasEl.width - 100, 570, 70, 23);
+        canvas.fillRect(canvasEl.width - 100, canvasEl.height -200, 70, 23);
+        canvas.fillRect(canvasEl.width - 100, canvasEl.height -220, 70, 20);
 
         
         // Imposta il colore del bordo a nero
         canvas.strokeStyle = 'black';
         // Disegna il bordo del rettangolo
-        canvas.strokeRect(canvasEl.width - 100, 550, 70, 20);
-        canvas.strokeRect(canvasEl.width - 100, 570, 70, 23);
+        canvas.strokeRect(canvasEl.width - 100, canvasEl.height -200, 70, 23);
+        canvas.strokeRect(canvasEl.width - 100, canvasEl.height -220, 70, 20);
         canvas.fillStyle = 'black'; 
         canvas.font = "15px Calibri"
-        canvas.fillText(myPlayer.score + " Kills", canvasEl.width - 83, 564); // show the number of kills on screen
+        canvas.fillText(myPlayer.score + " Kills", canvasEl.width - 83, canvasEl.height - 205); // show the number of kills on screen
 
         let playerWeapon = weaponImages[myPlayer.weapon];
-        canvas.drawImage(playerWeapon, 1462 - playerWeapon.width / 2, 563 + playerWeapon.height / 2);
+        canvas.drawImage(playerWeapon, canvasEl.width -70 - playerWeapon.width / 2,canvasEl.height - 208 + playerWeapon.height / 2);
     }
 
     for (const bullet of bullets) {

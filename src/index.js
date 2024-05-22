@@ -234,8 +234,10 @@ async function main(){
     
     app.use(express.static("public"));
     
-    httpServer.listen(5000);
-    
+    //httpServer.listen(5000);
+    httpServer.listen(5000, () => {
+        console.log('Server is running on http://0.0.0.0:5000');
+    });    
     let lastUpdate = Date.now();
     setInterval(() => {
         const now = Date.now();

@@ -46,18 +46,6 @@ marioRight2.src = "./images/mario(right2).png";
 const bulletImage = new Image();
 bulletImage.src = "./images/bullet.png"
 
-const rifleImage = new Image();
-rifleImage.src = "./images/rifle.png"
-
-const shotgunImage = new Image();
-shotgunImage.src = "./images/shotgun.png"
-
-const sniperImage = new Image();
-sniperImage.src = "./images/sniper.png"
-
-const pistolImage = new Image();
-pistolImage.src = "./images/pistol.png"
-
 const canvasEl = document.getElementById("canvas");
 canvasEl.width = window.innerWidth;
 canvasEl.height = window.innerHeight;
@@ -68,6 +56,23 @@ let players = []; //keeps track of players
 let bullets = []; //keeps track of bullets
 let weapons = []; //keeps track of weapons on screen
 let possibleWeapons = ["shotgun", "rifle", "pistol", "sniper"]; // all weapons that can spawn
+
+const weaponImages = {
+    rifle: new Image(),
+    shotgun: new Image(),
+    sniper: new Image(),
+    pistol: new Image(),
+    // Aggiungi qui tutte le altre immagini delle armi
+};
+
+weaponImages.rifle.src = "./images/rifle.png"
+
+weaponImages.shotgun.src = "./images/shotgun.png"
+
+weaponImages.sniper.src = "./images/sniper.png"
+
+weaponImages.pistol.src = "./images/pistol.png"
+
 const TILE_SIZE = 32; //pixels
 let timer = 1;
 let alternateImage = false;
@@ -368,9 +373,25 @@ function loop() {
     }
 
     timer++;
-    if (myPlayer) {
-        canvas.fillText(myPlayer.score + " Kills", canvasEl.width - 100, 100); // show the number of kills on screen
+    if (myPlayer) { //hud
         darwHealtbar(myPlayer, cameraX, cameraY, timer);
+
+        canvas.fillStyle = 'white';
+        canvas.fillRect(canvasEl.width - 100, 550, 70, 20);
+        canvas.fillRect(canvasEl.width - 100, 570, 70, 23);
+
+        
+        // Imposta il colore del bordo a nero
+        canvas.strokeStyle = 'black';
+        // Disegna il bordo del rettangolo
+        canvas.strokeRect(canvasEl.width - 100, 550, 70, 20);
+        canvas.strokeRect(canvasEl.width - 100, 570, 70, 23);
+        canvas.fillStyle = 'black'; 
+        canvas.font = "15px Calibri"
+        canvas.fillText(myPlayer.score + " Kills", canvasEl.width - 83, 564); // show the number of kills on screen
+
+        let playerWeapon = weaponImages[myPlayer.weapon];
+        canvas.drawImage(playerWeapon, 1462 - playerWeapon.width / 2, 563 + playerWeapon.height / 2);
     }
 
     for (const bullet of bullets) {
@@ -392,24 +413,12 @@ function loop() {
     };
 
     for (const weapon of weapons) {
-        // choose weapon image
-        let weaponImage;
-        switch (weapon.type) {
-            case "rifle":
-                weaponImage = rifleImage;
-                break;
-            case "shotgun":
-                weaponImage = shotgunImage;
-                break;
-            case "sniper":
-                weaponImage = sniperImage;
-                break;
-            case "pistol":
-                weaponImage = pistolImage;
-        }
-
+        // Ottieni l'immagine dell'arma usando l'oggetto weaponImages
+        let weaponImage = weaponImages[weapon.type];
+    
+        // Disegna l'immagine dell'arma sulla canvas
         canvas.drawImage(weaponImage, weapon.x - cameraX, weapon.y - cameraY);
-    }
+    }    
     window.requestAnimationFrame(loop);
 }  
 window.requestAnimationFrame(loop);

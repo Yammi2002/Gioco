@@ -1,4 +1,4 @@
-const socket = io(`ws://192.168.0.102:5000`); //to be filled with serverPC ip address
+const socket = io(`ws://192.168.0.105:5000`); //to be filled with serverPC ip address
 
 // load images
 const mapImage = new Image();

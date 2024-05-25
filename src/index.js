@@ -12,6 +12,14 @@ const SPEED = 3; // how fast players move
 const BULLETS_SPEED = 7;
 const TICK_RATE = 60; //how fast do we want to refresh the server
 const TILE_SIZE = 32;
+const spawn_points = [
+    [600,400],   //
+    [1000,400],  //
+    [1000,800],  //           //Array of coordinates [x,y]
+    [700,1500],
+    [1500,1000],
+    [1000,1500],
+];
 
 
 function tick(delta, map2D) {
@@ -102,8 +110,9 @@ function tick(delta, map2D) {
             if (distance < 8 && bullet.shooter !== player.id) { // player got shot
                 player.health -= 30;
                 if (player.health <= 0){
-                    player.x = 0;
-                    player.y = 0;
+                    let randomIndex = Math.floor(Math.random() * spawn_points.length); // select a random spawn point
+                    player.x = spawn_points[randomIndex][0];
+                    player.y = spawn_points[randomIndex][1];
                     player.health = 100; // restore the health
                     const shooter = players.find((player) => player.id === bullet.shooter);
                     shooter.score += 1; // update the score after every kill
@@ -137,10 +146,11 @@ async function main(){
             "right": false
         }
 
+        let randomIndex = Math.floor(Math.random() * spawn_points.length); // select a random spawn point
         players.push({
             id: socket.id,
-            x: 600,
-            y: 400,
+            x: spawn_points[randomIndex][0],
+            y: spawn_points[randomIndex][1],
             orientation: "right",
             score: 0,
             inMovement: false,

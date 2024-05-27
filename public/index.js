@@ -1,4 +1,4 @@
-const socket = io(`ws://192.168.0.105:5000`); //to be filled with serverPC ip address
+const socket = io(`ws://10.165.0.199:5000`); //to be filled with serverPC ip address
 
 // load images
 const mapImage = new Image();
@@ -55,7 +55,6 @@ let map2D = [[]]; //initialize the mapp
 let players = []; //keeps track of players
 let bullets = []; //keeps track of bullets
 let weapons = []; //keeps track of weapons on screen
-let possibleWeapons = ["shotgun", "rifle", "pistol", "sniper"]; // all weapons that can spawn
 
 const weaponImages = {
     rifle: new Image(),
@@ -359,20 +358,8 @@ function loop() {
     if (timer % 20 == 0) {
         alternateImage = !alternateImage;
     }
-
-    // weapons spawn (need to add locations)
-    if (timer % 1000 == 0) {
-        const x = Math.floor(Math.random() * canvasEl.width);
-        const y = Math.floor(Math.random() * canvasEl.height);
-        const row = Math.round(x / TILE_SIZE);
-        const col = Math.round(y / TILE_SIZE);
-        if (map2D[row][col].layer != 2){
-        const type = possibleWeapons[Math.floor(Math.random() * possibleWeapons.length)];
-        socket.emit("weapons", x, y, type);
-        }
-    }
-
     timer++;
+
     if (myPlayer) { //hud
         darwHealtbar(myPlayer, cameraX, cameraY, timer);
 

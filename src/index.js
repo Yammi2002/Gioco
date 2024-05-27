@@ -8,6 +8,9 @@ const io = new Server(httpServer);
 
 const loadMap = require('./mapLoader'); //call the module
 
+let timer = 1;
+let possibleWeapons = ["shotgun", "rifle", "pistol", "sniper"]; // all weapons that can spawn
+
 const SPEED = 3; // how fast players move
 const BULLETS_SPEED = 7;
 const TICK_RATE = 60; //how fast do we want to refresh the server
@@ -23,6 +26,25 @@ const spawn_points = [
 
 
 function tick(delta, map2D) {
+
+    // weapons spawn (need to add locations)
+    if (timer % 500 == 0) {
+        const row = Math.floor(Math.random() * 100);
+        const col = Math.floor(Math.random() * 100);
+        if (map2D[row][col].layer != 2){
+        const type = possibleWeapons[Math.floor(Math.random() * possibleWeapons.length)];
+        weapons.push({
+            x:col * TILE_SIZE,
+            y:row * TILE_SIZE,
+            type:type
+        });
+        }
+    }
+
+    if (weapons.length == 20){
+        weapons.shift();
+    }
+    timer++;
 
     for (const player of players) { //loops players
 
@@ -64,7 +86,7 @@ function tick(delta, map2D) {
 
         player.inMovement= true;
 
-        // Check the tile the player is standing of
+        // Check the tile the player is standing on
         const newRow = map2D.length / 2 + Math.round(desiredY / TILE_SIZE);
         const newCol = Math.round(desiredX / TILE_SIZE);
         const newRow2 = Math.round(desiredY / TILE_SIZE);

@@ -9,6 +9,7 @@ const io = new Server(httpServer);
 const loadMap = require('./mapLoader'); //call the module
 
 let timer = 1;
+let effect = "";
 let possiblePu = ["health", "speed"];
 let possibleWeapons = { 
     "shotgun":50, 
@@ -82,6 +83,12 @@ function tick(delta, map2D) {
     timer++;
 
     for (const player of players) { //loops players
+        if(player.effect_timer > 0) {player.effect_timer--;}
+        if (player.effect == "speed" && player.effect_timer != 0){
+            player.speed = 5;
+        } else{
+            player.speed = SPEED;
+        }
 
         const inputs = inputMap[player.id]; //checks players input
 
@@ -94,28 +101,28 @@ function tick(delta, map2D) {
 
         // Check when players want to move diagonaly
         if (inputs.right && inputs.up) {
-            desiredX += SPEED / 1.5;
-            desiredY -= SPEED / 1.5;
+            desiredX += player.speed / 1.5;
+            desiredY -= player.speed / 1.5;
         } else if (inputs.right && inputs.down) {
-            desiredX += SPEED / 1.5;
-            desiredY += SPEED / 1.5;
+            desiredX += player.speed / 1.5;
+            desiredY += player.speed / 1.5;
         } else if (inputs.left && inputs.up) {
-            desiredX -= SPEED / 1.5;
-            desiredY -= SPEED / 1.5;
+            desiredX -= player.speed / 1.5;
+            desiredY -= player.speed / 1.5;
         } else if (inputs.left && inputs.down) {
-            desiredX -= SPEED / 1.5;
-            desiredY += SPEED / 1.5;
+            desiredX -= player.speed / 1.5;
+            desiredY += player.speed / 1.5;
         } else if (inputs.up) {
-            desiredY -= SPEED;
+            desiredY -= player.speed;
             player.orientation="up";
         } else if (inputs.down) {
-            desiredY += SPEED;
+            desiredY += player.speed;
             player.orientation="down";
         } else if (inputs.right) {
-            desiredX += SPEED;
+            desiredX += player.speed;
             player.orientation="right";
         } else if (inputs.left) {
-            desiredX -= SPEED;
+            desiredX -= player.speed;
             player.orientation="left";
         } 
 
@@ -149,6 +156,9 @@ function tick(delta, map2D) {
             if((player.x >= pu.x -20 && player.x <= pu.x + 20) && (player.y >= pu.y -20 && player.y <= pu.y + 20)){
                 if (pu.type == "health" && player.health < 100){
                     player.health = 100;
+                } else if (pu.type == "speed"){
+                    player.effect = "speed";
+                    player.effect_timer = 600;
                 }
                 powerup = powerup.filter(p => p !== pu);
             }
@@ -227,7 +237,10 @@ async function main(){
             inMovement: false,
             health: 100,
             weapon: "pistol",  // default weapon
-            canShoot: true
+            canShoot: true,
+            speed: SPEED,
+            effect: "none",
+            effect_timer: 0
         }); // store players
 
         socket.emit("map", map2D); // send the map to clients

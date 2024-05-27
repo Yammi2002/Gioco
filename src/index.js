@@ -9,6 +9,7 @@ const io = new Server(httpServer);
 const loadMap = require('./mapLoader'); //call the module
 
 let timer = 1;
+let possiblePu = ["health", "speed"];
 let possibleWeapons = { 
     "shotgun":50, 
     "rifle":30, 
@@ -55,7 +56,29 @@ function tick(delta, map2D) {
 
     if (weapons.length == 20){
         weapons.shift();
+    }    
+    
+    
+    // power up spawn (need to add locations)
+    if (timer % 100 == 0) {
+        const row = Math.floor(Math.random() * 100);
+        const col = Math.floor(Math.random() * 100);
+        if (map2D[row][col].layer != 2){
+            type = possiblePu[Math.floor(Math.random() * possiblePu.length)];
+            powerup.push({
+                x:col * TILE_SIZE,
+                y:row * TILE_SIZE,
+                type:type
+            });
+        }
     }
+
+    if (powerup.length == 20){
+        powerup.shift();
+    }
+
+
+
     timer++;
 
     for (const player of players) { //loops players
@@ -120,6 +143,16 @@ function tick(delta, map2D) {
                 weapons = weapons.filter(w => w !== weapon);
             }
         }
+
+        // handles powerup pick-ups
+        for(const pu of powerup){
+            if((player.x >= pu.x -20 && player.x <= pu.x + 20) && (player.y >= pu.y -20 && player.y <= pu.y + 20)){
+                if (pu.type == "health" && player.health < 100){
+                    player.health = 100;
+                }
+                powerup = powerup.filter(p => p !== pu);
+            }
+        }
     }
     bullets = bullets.filter((bullet) => bullet.timeToLive > 0); // remove bullets that are at a certain distance (timeToLive has reached 0)
 
@@ -159,12 +192,16 @@ function tick(delta, map2D) {
     io.emit("players", players); // send players to clients
     io.emit("bullets", bullets);
     io.emit("weapons", weapons); // send weapons to clients
+    io.emit("powerups", powerup); // send pu to clients
 }
+
 
 const inputMap = {}; // empty object
 let players = []; //keeps track of players
 let bullets = [] //keeps track of bullets
 let weapons = []; //keeps track of weapons
+let powerup = []; //keeps track of power ups on screen
+
 
 async function main(){
 

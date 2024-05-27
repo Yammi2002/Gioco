@@ -1,4 +1,4 @@
-const socket = io(`ws://10.165.0.183:5000`); //to be filled with serverPC ip address
+const socket = io(`ws://10.165.0.199:5000`); //to be filled with serverPC ip address
 
 // load images
 const mapImage = new Image();
@@ -46,6 +46,7 @@ marioRight2.src = "./images/mario(right2).png";
 const bulletImage = new Image();
 bulletImage.src = "./images/bullet.png"
 
+
 const canvasEl = document.getElementById("canvas");
 canvasEl.width = window.innerWidth;
 canvasEl.height = window.innerHeight;
@@ -55,6 +56,7 @@ let map2D = [[]]; //initialize the mapp
 let players = []; //keeps track of players
 let bullets = []; //keeps track of bullets
 let weapons = []; //keeps track of weapons on screen
+let powerup = []; //keeps track of power ups on screen
 
 const weaponImages = {
     rifle: new Image(),
@@ -71,6 +73,15 @@ weaponImages.shotgun.src = "./images/shotgun.png"
 weaponImages.sniper.src = "./images/sniper.png"
 
 weaponImages.pistol.src = "./images/pistol.png"
+
+const puImages = {
+    health: new Image(),
+    speed: new Image(),
+};
+
+puImages.health.src = "./images/32heart.png"
+puImages.speed.src = "./images/32potion.png"
+
 
 const TILE_SIZE = 32; //pixels
 let timer = 1;
@@ -95,6 +106,10 @@ socket.on("bullets", (serverBullets) => {
 socket.on("weapons", (serverWeapons) => {
     weapons = serverWeapons;
 }); //update weapons on screen
+
+socket.on("powerups", (serverPu) => {
+    powerup = serverPu;
+}); 
 
 const input = {
     "up": false,
@@ -402,10 +417,17 @@ function loop() {
     for (const weapon of weapons) {
         // Ottieni l'immagine dell'arma usando l'oggetto weaponImages
         let weaponImage = weaponImages[weapon.type];
-        console.log(weapon.type);
     
         // Disegna l'immagine dell'arma sulla canvas
         canvas.drawImage(weaponImage, weapon.x - cameraX, weapon.y - cameraY);
+    }    
+
+    for (const pu of powerup) {
+        // Ottieni l'immagine dell'arma usando l'oggetto weaponImages
+        let puImage = puImages[pu.type];
+    
+        // Disegna l'immagine dell'arma sulla canvas
+        canvas.drawImage(puImage, pu.x - cameraX, pu.y - cameraY);
     }    
     window.requestAnimationFrame(loop);
 }  

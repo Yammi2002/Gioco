@@ -183,7 +183,7 @@ function tick(delta, map2D) {
 
         // check if someone got shot
         for (const player of players) {
-            const distance = Math.sqrt((player.x - bullet.x + 10) ** 2 + (player.y - bullet.y + 10) ** 2);
+            const distance = Math.sqrt((player.x - bullet.x + 10) ** 2 + (player.y - bullet.y + 25) ** 2);
             if (distance < 8 && bullet.shooter !== player.id) { // player got shot
                 player.health -= bullet.damage;
                 if (player.health <= 0){

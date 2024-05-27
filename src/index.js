@@ -9,7 +9,11 @@ const io = new Server(httpServer);
 const loadMap = require('./mapLoader'); //call the module
 
 let timer = 1;
-let possibleWeapons = ["shotgun", "rifle", "pistol", "sniper"]; // all weapons that can spawn
+let possibleWeapons = { 
+    "shotgun":50, 
+    "rifle":30, 
+    "pistol":30, 
+    "sniper":100 }; // all weapons that can spawn
 
 const SPEED = 3; // how fast players move
 const BULLETS_SPEED = 7;
@@ -32,12 +36,20 @@ function tick(delta, map2D) {
         const row = Math.floor(Math.random() * 100);
         const col = Math.floor(Math.random() * 100);
         if (map2D[row][col].layer != 2){
-        const type = possibleWeapons[Math.floor(Math.random() * possibleWeapons.length)];
-        weapons.push({
-            x:col * TILE_SIZE,
-            y:row * TILE_SIZE,
-            type:type
-        });
+            let chiaviArmi = Object.keys(possibleWeapons);
+
+            // Genera un indice casuale basato sulla lunghezza dell'array di chiavi
+            let indiceCasuale = Math.floor(Math.random() * chiaviArmi.length);
+            
+            // Usa l'indice casuale per ottenere una chiave specifica
+            let chiaveCasuale = chiaviArmi[indiceCasuale];
+            const type = chiaveCasuale;
+            
+            weapons.push({
+                x:col * TILE_SIZE,
+                y:row * TILE_SIZE,
+                type:type
+            });
         }
     }
 
@@ -130,7 +142,7 @@ function tick(delta, map2D) {
         for (const player of players) {
             const distance = Math.sqrt((player.x - bullet.x + 10) ** 2 + (player.y - bullet.y + 10) ** 2);
             if (distance < 8 && bullet.shooter !== player.id) { // player got shot
-                player.health -= 30;
+                player.health -= bullet.damage;
                 if (player.health <= 0){
                     let randomIndex = Math.floor(Math.random() * spawn_points.length); // select a random spawn point
                     player.x = spawn_points[randomIndex][0];
@@ -191,13 +203,6 @@ async function main(){
             players = players.filter((player) => player.id !== socket.id);
         }); // remove players from the array when they disconnect (and consequently from the map when the server sends it to clients)
 
-        socket.on("weapons", (x, y, type) => {
-            weapons.push({
-                x, y, // where to place it
-                type,
-            });
-        }); // store weapons on screen
-
         socket.on("bullets", (angle) => {
             const player = players.find((player) => player.id === socket.id); // find the shooter
 
@@ -214,7 +219,8 @@ async function main(){
                     x: player.x,
                     y: player.y + 8, // spawn bullets in th right place
                     shooter: socket.id,
-                    timeToLive: 500 // bullets hit close target
+                    timeToLive: 500, // bullets hit close target
+                    damage: 30
                 });
                 waitTime = 1000;
             }
@@ -224,7 +230,8 @@ async function main(){
                     x: player.x,
                     y: player.y + 8, // spawn bullets in th right place
                     shooter: socket.id,
-                    timeToLive: 1000 // bullets reach farther
+                    timeToLive: 1000, // bullets reach farther
+                    damage: 30
                 });  
                 waitTime = 300;
             }
@@ -241,7 +248,8 @@ async function main(){
                     x: player.x,
                     y: player.y + 8, // spawn bullets in th right place
                     shooter: socket.id,
-                    timeToLive: 300 // you have to be realy close to land shots
+                    timeToLive: 300, // you have to be realy close to land shots
+                    damage: 50
                     });
                     waitTime = 1000;
                 }
@@ -253,7 +261,8 @@ async function main(){
                     x: player.x,
                     y: player.y + 8, // spawn bullets in th right place
                     shooter: socket.id,
-                    timeToLive: 1500 // bullets reach far away
+                    timeToLive: 1500, // bullets reach far away
+                    damage: 100
                     });
                     waitTime = 1500;
             }

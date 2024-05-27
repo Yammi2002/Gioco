@@ -1,4 +1,4 @@
-const socket = io(`ws://10.165.0.199:5000`); //to be filled with serverPC ip address
+const socket = io(`ws://10.165.0.183:5000`); //to be filled with serverPC ip address
 
 // load images
 const mapImage = new Image();
@@ -402,6 +402,7 @@ function loop() {
     for (const weapon of weapons) {
         // Ottieni l'immagine dell'arma usando l'oggetto weaponImages
         let weaponImage = weaponImages[weapon.type];
+        console.log(weapon.type);
     
         // Disegna l'immagine dell'arma sulla canvas
         canvas.drawImage(weaponImage, weapon.x - cameraX, weapon.y - cameraY);

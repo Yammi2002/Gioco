@@ -1,4 +1,4 @@
-const socket = io(`ws://10.161.1.2:5000`); //to be filled with serverPC ip address
+const socket = io(`ws://192.168.0.105:5000`); //to be filled with serverPC ip address
 
 // load images
 const mapImage = new Image();
@@ -121,7 +121,7 @@ socket.on("death", () => {
 socket.on("speed", () => {
     let speedSound = new Audio('./audios/speed.mp3');
     speedSound.currentTime = 0;
-    speedSound.volume = 1.5;
+    speedSound.volume = 0.3;
     speedSound.play();
 });
 

@@ -1,4 +1,4 @@
-const socket = io(`ws://10.165.0.199:5000`); //to be filled with serverPC ip address
+const socket = io(`ws://10.161.1.2:5000`); //to be filled with serverPC ip address
 
 // load images
 const mapImage = new Image();
@@ -111,6 +111,34 @@ socket.on("powerups", (serverPu) => {
     powerup = serverPu;
 }); 
 
+socket.on("death", () => {
+    let deathSound = new Audio("./audios/death.mp3");
+    deathSound.volume = 0.2;
+    deathSound.currentTime = 0;
+    deathSound.play();
+});
+
+socket.on("speed", () => {
+    let speedSound = new Audio('./audios/speed.mp3');
+    speedSound.currentTime = 0;
+    speedSound.volume = 1.5;
+    speedSound.play();
+});
+
+socket.on("health", () => {
+    let healthSound = new Audio('./audios/health.mp3');
+    healthSound.currentTime = 0;
+    healthSound.volume = 0.3;
+    healthSound.play();
+});
+
+socket.on("gun_pickup", () => {
+    let gunPickupSound = new Audio('./audios/gun.mp3');
+    gunPickupSound.currentTime = 0;
+    gunPickupSound.volume = 0.8;
+    gunPickupSound.play();
+});
+
 const input = {
     "up": false,
     "down": false,
@@ -152,6 +180,18 @@ window.addEventListener("click", (e) => {
     socket.emit("bullets", angle);
 }); // check when the player clicks and send to the server
 
+function handleInteraction(e) {
+    //let mySound = new Audio('./audios/Donkey Kong Country Returns.mp3');
+    //mySound.loop = true;
+    //ySound.play();
+}
+
+const events = ['click', 'keydown', 'mousemove', 'touchstart', 'mousedown'];
+
+events.forEach(event => {
+    window.addEventListener(event, handleInteraction, {once: true});
+}); // add soundtrack as soon as an interaction happens
+
 function darwHealtbar(player, cameraX, cameraY) {
     const barWidth = 20; // Larghezza della barra
     const barHeight = 3; // Altezza della barra
@@ -180,6 +220,7 @@ let border3 = false;
 let border4 = false;
 let cameraSaveX = 0;
 let cameraSaveY = 0;
+
 function loop() {
 
     canvas.clearRect(0, 0, canvasEl.width, canvasEl.height); // to update the canvas every frame

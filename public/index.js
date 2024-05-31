@@ -1,4 +1,4 @@
-const socket = io(`ws://192.168.1.88:5000`); //to be filled with serverPC ip address
+const socket = io(`ws://192.168.201.111:5000`); //to be filled with serverPC ip address
 
 // load images
 const mapImage = new Image();
@@ -86,6 +86,15 @@ puImages.speed.src = "./images/32potion.png"
 const TILE_SIZE = 32; //pixels
 let timer = 1;
 let alternateImage = false;
+let border1 = false;
+let border2 = false;
+let border3 = false;
+let border4 = false;
+let cameraSaveX = 0;
+let cameraSaveY = 0;
+
+let cameraX = 0;
+let cameraY = 0;
 
 socket.on("connect", () => {
     console.log("connected");
@@ -174,18 +183,27 @@ window.addEventListener("keyup", (e) => {
 }); // check when inputs stop and send to the server
 
 window.addEventListener("click", (e) => {  // da sistemare
-    // Ottieni le dimensioni e la posizione del canvas nella finestra del browser
-    const rect = canvasEl.getBoundingClientRect();
+    const myPlayer = players.find((player) => player.id === socket.id); // find current player
 
-    // Calcola le coordinate assolute sulla mappa tenendo conto della posizione della telecamera
-    const absoluteX = e.clientX - rect.left;
-    const absoluteY = e.clientY - rect.top;
-    // Calcola il centro del canvas
-    const canvasCenterX = canvasEl.width / 2;
-    const canvasCenterY = canvasEl.height / 2;
+    // Calcola le coordinate assolute del punto cliccato rispetto all'angolo in alto a sinistra del canvas
+    const absoluteX = e.clientX;
+    const absoluteY = e.clientY;
 
-    // Calcola l'angolo usando le coordinate assolute sulla mappa
-    const angle = Math.atan2(absoluteY - canvasCenterY, absoluteX - canvasCenterX);
+    // Calcola le coordinate relative al centro dello schermo
+    const centerX = canvasEl.width / 2;
+    const centerY = canvasEl.height / 2;
+
+    let relativeX = absoluteX - centerX;
+    let relativeY = absoluteY - centerY;
+
+    if (border1) relativeX -= myPlayer.x - centerX - cameraX;
+    if (border2) relativeX += canvasEl.width - myPlayer.x - centerX + cameraX;
+    if (border3) relativeY -= myPlayer.y - centerY - cameraY;
+    if (border4) relativeY += canvasEl.height - myPlayer.y - centerY + cameraY;
+
+    // Calcola l'angolo usando le coordinate relative al centro dello schermo
+    const angle = Math.atan2(relativeY, relativeX);
+    // Calcola l'angolo usando le coordinate assolute dell'oggetto bersaglio rispetto al centro del canvas
     socket.emit("bullets", angle);
 }); // check when the player clicks and send to the server
 
@@ -227,13 +245,6 @@ function darwHealtbar(player, cameraX, cameraY) {
     canvas.fillRect(player.x - cameraX - 3, player.y - cameraY - 3, filledWidth, barHeight);
 } // draws the health bar
 
-let border1 = false;
-let border2 = false;
-let border3 = false;
-let border4 = false;
-let cameraSaveX = 0;
-let cameraSaveY = 0;
-
 function loop() {
 
     canvas.clearRect(0, 0, canvasEl.width, canvasEl.height); // to update the canvas every frame
@@ -241,9 +252,6 @@ function loop() {
     const myPlayer = players.find((player) => player.id === socket.id); // find current player
 
     // camera settings
-
-    let cameraX = 0;
-    let cameraY = 0;
     let player_tile_x = 10;
     let player_tile_y = 10;
     if (myPlayer) {
@@ -254,35 +262,39 @@ function loop() {
         // block the camera at borders
         //LEFT BORDER
         if (player_tile_x <= 25) {
+            border1 = true;
             if (player_tile_x == 25) {
                 cameraSaveX = cameraX;
             }
             player_tile_x = 25;
             cameraX = cameraSaveX;
-        } else if (player_tile_x >= 76) {
-            //RIGHT BORDER
+        } else {border1 = false;}
+        if (player_tile_x >= 76) {
+            border2 = true; //RIGHT BORDER
             if (player_tile_x == 76) {
                 cameraSaveX = cameraX;
             }
             player_tile_x = 76;
             cameraX = cameraSaveX;
-        }
+        } else {border2 = false;}
 
         //UP BORDER
         if (player_tile_y <= 12) {
+            border3 = true;
             if (player_tile_y == 12) {
                 cameraSaveY = cameraY;
             }
             player_tile_y = 12;
             cameraY = cameraSaveY;
-        } else if (player_tile_y >= 87) {
-            //DOWN BORDER
+        } else {border3 = false;}
+        if (player_tile_y >= 87) {
+            border4 = true;//DOWN BORDER
             if (player_tile_y == 87) {
                 cameraSaveY = cameraY;
             }
             player_tile_y = 87;
             cameraY = cameraSaveY;
-        }
+        } else {border4 =false;}
     }
     const TILES_IN_ROW_GROUND = 10; // tiles in image row
     const TILES_IN_ROW_STREETS = 4;

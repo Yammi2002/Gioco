@@ -1,4 +1,4 @@
-const socket = io(`ws://192.168.0.102:5000`); //to be filled with serverPC ip address
+const socket = io(`ws://192.168.1.88:5000`); //to be filled with serverPC ip address
 
 // load images
 const mapImage = new Image();
@@ -114,27 +114,23 @@ socket.on("powerups", (serverPu) => {
 socket.on("death", () => {
     let deathSound = new Audio("./audios/death.mp3");
     deathSound.volume = 0.7;
-    deathSound.currentTime = 0;
     deathSound.play();
 });
 
 socket.on("speed", () => {
     let speedSound = new Audio('./audios/speed.mp3');
-    speedSound.currentTime = 0;
     speedSound.volume = 0.7;
     speedSound.play();
 });
 
 socket.on("health", () => {
     let healthSound = new Audio('./audios/health.mp3');
-    healthSound.currentTime = 0;
     healthSound.volume = 0.7;
     healthSound.play();
 });
 
 socket.on("gun_pickup", () => {
     let gunPickupSound = new Audio('./audios/gun.mp3');
-    gunPickupSound.currentTime = 0;
     gunPickupSound.volume = 0.7;
     gunPickupSound.play();
 });
@@ -182,9 +178,8 @@ window.addEventListener("click", (e) => {  // da sistemare
     const rect = canvasEl.getBoundingClientRect();
 
     // Calcola le coordinate assolute sulla mappa tenendo conto della posizione della telecamera
-    const absoluteX = e.clientX + cameraX - rect.left;
-    const absoluteY = e.clientY + cameraY - rect.top;
-    console.log(cameraX, cameraY);
+    const absoluteX = e.clientX - rect.left;
+    const absoluteY = e.clientY - rect.top;
     // Calcola il centro del canvas
     const canvasCenterX = canvasEl.width / 2;
     const canvasCenterY = canvasEl.height / 2;
@@ -198,17 +193,16 @@ function handleInteraction(e) {
     let mySound = new Audio('./audios/Donkey Kong Country Returns.mp3');
     mySound.loop = true;
     mySound.volume = 0.3
-    console.log("aaaaaaaaa");
     mySound.play();
+
+    events.forEach(e =>{
+        window.removeEventListener(e, handleInteraction);
+    });
 }
-let started = false;
 const events = ['click', 'keydown', 'touchstart', 'mousedown'];
 
 events.forEach(event => {
-    if(!started){
-        window.addEventListener(event, handleInteraction, {once: true});
-        started = true;
-    }
+        window.addEventListener(event, handleInteraction);
 }); // add soundtrack as soon as an interaction happens
 
 function darwHealtbar(player, cameraX, cameraY) {

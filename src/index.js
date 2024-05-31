@@ -148,7 +148,7 @@ function tick(delta, map2D) {
             if((player.x >= weapon.x -20 && player.x <= weapon.x + 20) && (player.y >= weapon.y -20 && player.y <= weapon.y + 20)){
                 player.weapon = weapon.type;
                 weapons = weapons.filter(w => w !== weapon);
-                io.emit("gun_pickup");
+                io.to(player.id).emit("gun_pickup");
             }
         }
 
@@ -186,9 +186,10 @@ function tick(delta, map2D) {
 
         // check if someone got shot
         for (const player of players) {
-            const distance = Math.sqrt((player.x - bullet.x + 10) ** 2 + (player.y - bullet.y + 25) ** 2);
+            const distance = Math.sqrt((player.x - bullet.x + 10) ** 2 + (player.y-10 - bullet.y + 25) ** 2);
             if (distance < 8 && bullet.shooter !== player.id) { // player got shot
                 player.health -= bullet.damage;
+                io.to(bullet.shooter).emit("hit");
                 if (player.health <= 0){
                     io.to(player.id).emit("death");
                     let randomIndex = Math.floor(Math.random() * spawn_points.length); // select a random spawn point

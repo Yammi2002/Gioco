@@ -1,4 +1,4 @@
-const socket = io(`ws://192.168.0.105:5000`); //to be filled with serverPC ip address
+const socket = io(`ws://192.168.1.167:5000`); //to be filled with serverPC ip address
 
 // load images
 const mapImage = new Image();
@@ -114,29 +114,30 @@ socket.on("powerups", (serverPu) => {
 socket.on("death", () => {
     let deathSound = new Audio("./audios/death.mp3");
     deathSound.volume = 0.2;
-    deathSound.currentTime = 0;
     deathSound.play();
 });
 
 socket.on("speed", () => {
     let speedSound = new Audio('./audios/speed.mp3');
-    speedSound.currentTime = 0;
-    speedSound.volume = 0.3;
+    speedSound.volume = 0.5;
     speedSound.play();
 });
 
 socket.on("health", () => {
     let healthSound = new Audio('./audios/health.mp3');
-    healthSound.currentTime = 0;
-    healthSound.volume = 0.3;
+    healthSound.volume = 0.6;
     healthSound.play();
 });
 
 socket.on("gun_pickup", () => {
     let gunPickupSound = new Audio('./audios/gun.mp3');
-    gunPickupSound.currentTime = 0;
     gunPickupSound.volume = 0.8;
     gunPickupSound.play();
+});
+
+socket.on("hit", () => {
+    let hitSound = new Audio('./audios/Hit.mp3');
+    hitSound.play();
 });
 
 const input = {
@@ -172,21 +173,35 @@ window.addEventListener("keyup", (e) => {
     socket.emit("input", input);
 }); // check when inputs stop and send to the server
 
-window.addEventListener("click", (e) => {
-    const angle = Math.atan2(
-        e.clientY - canvasEl.height / 2,
-        e.clientX - canvasEl.width / 2
-    );
+window.addEventListener("click", (e) => {  // da sistemare
+    // Ottieni le dimensioni e la posizione del canvas nella finestra del browser
+    const rect = canvasEl.getBoundingClientRect();
+
+    // Calcola le coordinate assolute sulla mappa tenendo conto della posizione della telecamera
+    const absoluteX = e.clientX + cameraX - rect.left;
+    const absoluteY = e.clientY + cameraY - rect.top;
+    console.log(cameraX, cameraY);
+    // Calcola il centro del canvas
+    const canvasCenterX = canvasEl.width / 2;
+    const canvasCenterY = canvasEl.height / 2;
+
+    // Calcola l'angolo usando le coordinate assolute sulla mappa
+    const angle = Math.atan2(absoluteY - canvasCenterY, absoluteX - canvasCenterX);
     socket.emit("bullets", angle);
 }); // check when the player clicks and send to the server
 
-function handleInteraction(e) {
-    //let mySound = new Audio('./audios/Donkey Kong Country Returns.mp3');
-    //mySound.loop = true;
-    //ySound.play();
+function handleInteraction() {
+    let mySound = new Audio('./audios/Donkey Kong Country Returns.mp3');
+    mySound.volume = 0.3;
+    mySound.loop = true;
+    mySound.play();
+
+    events.forEach(e => {
+        window.removeEventListener(e, handleInteraction);
+    });
 }
 
-const events = ['click', 'keydown', 'mousemove', 'touchstart', 'mousedown'];
+const events = ['click', 'keydown', 'touchstart', 'mousedown'];
 
 events.forEach(event => {
     window.addEventListener(event, handleInteraction, {once: true});

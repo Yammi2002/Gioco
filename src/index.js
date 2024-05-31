@@ -157,11 +157,11 @@ function tick(delta, map2D) {
             if((player.x >= pu.x -20 && player.x <= pu.x + 20) && (player.y >= pu.y -20 && player.y <= pu.y + 20)){
                 if (pu.type == "health"){
                     if(player.health < 100) player.health = 100;
-                    io.to(player.id).emit("health");
+                    io.emit("health");
                 } else if (pu.type == "speed"){
                     player.effect = "speed";
                     player.effect_timer = 600;
-                    io.to(player.id).emit("speed");
+                    io.emit("speed");
                 }
                 powerup = powerup.filter(p => p !== pu);
             }
@@ -191,7 +191,7 @@ function tick(delta, map2D) {
                 player.health -= bullet.damage;
                 io.to(bullet.shooter).emit("hit");
                 if (player.health <= 0){
-                    io.to(player.id).emit("death");
+                io.to(player.id).emit("death");
                     let randomIndex = Math.floor(Math.random() * spawn_points.length); // select a random spawn point
                     player.x = spawn_points[randomIndex][0];
                     player.y = spawn_points[randomIndex][1];

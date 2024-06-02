@@ -1,51 +1,4 @@
-const socket = io(`ws://192.168.201.111:5000`); //to be filled with serverPC ip address
-
-// load images
-const mapImage = new Image();
-mapImage.src = "./images/ground.png"
-
-const mapImage2 = new Image();
-mapImage2.src = "./images/streets.png";
-
-const mapImage3 = new Image();
-mapImage3.src = "./images/collision_obj_templates.png";
-
-const mapImage4 = new Image();
-mapImage4.src = "./images/ground_decor.png";
-
-const marioLeft = new Image();
-marioLeft.src = "./images/mario(left).png";
-
-const marioLeft2 = new Image();
-marioLeft2.src = "./images/mario(left2).png";
-
-const marioDown = new Image();
-marioDown.src = "./images/mario(down).png";
-
-const marioDown1 = new Image();
-marioDown1.src = "./images/mario(down1).png";
-
-const marioDown2 = new Image();
-marioDown2.src = "./images/mario(down2).png";
-
-const marioUp = new Image();
-marioUp.src = "./images/mario(up).png";
-
-const marioUp1 = new Image();
-marioUp1.src = "./images/mario(up1).png";
-
-const marioUp2 = new Image();
-marioUp2.src = "./images/mario(up2).png";
-
-const marioRight = new Image();
-marioRight.src = "./images/mario(right).png";
-
-const marioRight2 = new Image();
-marioRight2.src = "./images/mario(right2).png";
-
-const bulletImage = new Image();
-bulletImage.src = "./images/bullet.png"
-
+const socket = io(`ws://192.168.1.7:5000`); //to be filled with serverPC ip address
 
 const canvasEl = document.getElementById("canvas");
 canvasEl.width = window.innerWidth;
@@ -58,29 +11,7 @@ let bullets = []; //keeps track of bullets
 let weapons = []; //keeps track of weapons on screen
 let powerup = []; //keeps track of power ups on screen
 
-const weaponImages = {
-    rifle: new Image(),
-    shotgun: new Image(),
-    sniper: new Image(),
-    pistol: new Image(),
-    // Aggiungi qui tutte le altre immagini delle armi
-};
-
-weaponImages.rifle.src = "./images/rifle.png"
-
-weaponImages.shotgun.src = "./images/shotgun.png"
-
-weaponImages.sniper.src = "./images/sniper.png"
-
-weaponImages.pistol.src = "./images/pistol.png"
-
-const puImages = {
-    health: new Image(),
-    speed: new Image(),
-};
-
-puImages.health.src = "./images/32heart.png"
-puImages.speed.src = "./images/32potion.png"
+import { marioImages, weaponImages, mapImages, bulletImage, puImages } from './imagesLoader.js';
 
 
 const TILE_SIZE = 32; //pixels
@@ -311,7 +242,7 @@ function loop() {
             const imageRow = parseInt(id / TILES_IN_ROW_GROUND);
             const imageCol = id % TILES_IN_ROW_GROUND;
             canvas.drawImage(
-                mapImage,
+                mapImages.mapImage,
                 imageCol * TILE_SIZE,
                 imageRow * TILE_SIZE,
                 TILE_SIZE,
@@ -334,7 +265,7 @@ function loop() {
             const imageRow = parseInt(id / TILES_IN_ROW_STREETS);
             const imageCol = id % TILES_IN_ROW_STREETS;
             canvas.drawImage(
-                mapImage2,
+                mapImages.mapImage2,
                 imageCol * TILE_SIZE,
                 imageRow * TILE_SIZE,
                 TILE_SIZE,
@@ -356,7 +287,7 @@ function loop() {
             const imageRow = parseInt(id / TILES_IN_ROW_DECOR);
             const imageCol = id % TILES_IN_ROW_DECOR;
             canvas.drawImage(
-                mapImage4,
+                mapImages.mapImage4,
                 imageCol * TILE_SIZE,
                 imageRow * TILE_SIZE,
                 TILE_SIZE,
@@ -376,38 +307,38 @@ function loop() {
         switch (player.orientation) {
             case "up":
                 if (alternateImage && player.inMovement) {
-                    playerImage = marioUp1;
+                    playerImage = marioImages.marioUp1;
                 } else if (!(player.inMovement)) {
-                    playerImage = marioUp;
+                    playerImage = marioImages.marioUp;
                 } else {
-                    playerImage = marioUp2;
+                    playerImage = marioImages.marioUp2;
                 }
                 break;
             case "down":
                 if (alternateImage && player.inMovement) {
-                    playerImage = marioDown1;
+                    playerImage = marioImages.marioDown1;
                 } else if (!(player.inMovement)) {
-                    playerImage = marioDown;
+                    playerImage = marioImages.marioDown;
                 } else {
-                    playerImage = marioDown2;
+                    playerImage = marioImages.marioDown2;
                 }
                 break;
             case "left":
                 if (alternateImage && player.inMovement) {
-                    playerImage = marioLeft;
+                    playerImage = marioImages.marioLeft;
                 } else {
-                    playerImage = marioLeft2;
+                    playerImage = marioImages.marioLeft2;
                 }
                 break;
             case "right":
                 if (alternateImage && player.inMovement) {
-                    playerImage = marioRight;
+                    playerImage = marioImages.marioRight;
                 } else {
-                    playerImage = marioRight2;
+                    playerImage = marioImages.marioRight2;
                 }
                 break;
             default:
-                playerImage = marioDown; // default image when the orientation cannot be determined
+                playerImage = marioImages.marioDown; // default image when the orientation cannot be determined
                 break;
         }
         canvas.drawImage(playerImage, player.x - cameraX, player.y - cameraY); // draw players on the canvas
@@ -422,7 +353,7 @@ function loop() {
             const imageRow = parseInt(id / TILES_IN_ROW_COLLISION);
             const imageCol = id % TILES_IN_ROW_COLLISION;
             canvas.drawImage(
-                mapImage3,
+                mapImages.mapImage3,
                 imageCol * TILE_SIZE,
                 imageRow * TILE_SIZE,
                 TILE_SIZE,
